@@ -1,6 +1,8 @@
 import os
 import cv2
 
+from tqdm import tqdm
+
 
 class PicturePreparation:
     def __init__(self, path):
@@ -18,6 +20,8 @@ class PicturePreparation:
             success, image = video.read()
             self.images.append(image)
 
+        video.release()
+
         return self.images
 
     def save_images(self):
@@ -26,10 +30,12 @@ class PicturePreparation:
         """
         self.prepare_images()
         PicturePreparation.prepare_folders()
-        for index, image in enumerate(self.images):
-            cv2.imwrite("frames_from_movies/{}.png".format(index), image)
-            gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            cv2.imwrite("bw_frames/{}.png".format(index), gray_image)
+        for index, image in tqdm(enumerate(self.images)):
+            resized = cv2.resize(image, (int(256), int(256)))
+            cv2.imwrite("frames_from_movies/{}.png".format(index), resized)
+            gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
+            resized_gray = cv2.resize(gray_image, (256, 256))
+            cv2.imwrite("bw_frames/{}.png".format(index), resized_gray)
 
     @staticmethod
     def prepare_folders():
