@@ -1,0 +1,46 @@
+name: coloring
+channels:
+  - bioninja
+  - defaults
+dependencies:
+  - certifi=2018.1.18=py36_0
+  - pip=9.0.1=py36_5
+  - python=3.6.4=h0c2934d_3
+  - setuptools=38.5.1=py36_0
+  - vc=14=h0510ff6_3
+  - vs2015_runtime=14.0.25123=3
+  - wheel=0.30.0=py36h6c3ec14_1
+  - wincertstore=0.2=py36h7fe50ca_0
+  - pip:
+    - absl-py==0.1.13
+    - astor==0.6.2
+    - bleach==1.5.0
+    - cycler==0.10.0
+    - decorator==4.2.1
+    - gast==0.2.0
+    - grpcio==1.10.0
+    - h5py==2.7.1
+    - html5lib==0.9999999
+    - keras==2.1.5
+    - kiwisolver==1.0.1
+    - markdown==2.6.11
+    - matplotlib==2.2.2
+    - networkx==2.1
+    - numpy==1.14.2
+    - opencv-python==3.4.0.12
+    - pillow==5.0.0
+    - protobuf==3.5.2.post1
+    - pyparsing==2.2.0
+    - python-dateutil==2.7.2
+    - pytz==2018.3
+    - pywavelets==0.5.2
+    - pyyaml==3.12
+    - scikit-image==0.13.1
+    - scipy==1.0.1
+    - six==1.11.0
+    - tensorboard==1.6.0
+    - tensorflow==1.6.0
+    - termcolor==1.1.0
+    - tqdm==4.19.9
+    - werkzeug==0.14.1
+
