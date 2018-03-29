@@ -97,7 +97,7 @@ def image_a_b_gen(batch_size):
 
 
 # Train model
-EPOCHS = 50
+EPOCHS = 1
 model.compile(optimizer='adamax', loss='mse', metrics=['mae', 'acc'])
 model.fit_generator(image_a_b_gen(batch_size), epochs=EPOCHS, steps_per_epoch=1)
 
@@ -105,7 +105,7 @@ model.save_weights('model_{}e_1000pic.h5'.format(EPOCHS))
 model.save('model_{}e_1000pic_m.h5'.format(EPOCHS))
 #
 color_me = []
-for filename in [filename for filename in os.listdir('test/') if filename.endswith(".png")]:
+for filename in [filename for filename in os.listdir('test/')[:10:5] if filename.endswith(".png")]:
     color_me.append(img_to_array(load_img('test/' + filename)))
 color_me = np.array(color_me, dtype=float)
 gray_me = gray2rgb(rgb2gray(1.0 / 255 * color_me))
@@ -116,6 +116,10 @@ color_me = color_me.reshape(color_me.shape + (1,))
 # Test model
 output = model.predict([color_me, color_me_embed])
 output = output * 128
+
+# Create output folder
+if not os.path.exists('result'):
+    os.mkdir('result')
 
 # Output colorizations
 for i in range(len(output)):

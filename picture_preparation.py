@@ -31,10 +31,12 @@ class PicturePreparation:
         for index, image in tqdm(enumerate(self.images)):
             if not (image is None):
                 resized = cv2.resize(image, (int(256), int(256)))
-                cv2.imwrite("frames_from_movies/{}.png".format(index), resized)
                 gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-                resized_gray = cv2.resize(gray_image, (256, 256))
-                cv2.imwrite("bw_frames/{}.png".format(index), resized_gray)
+                if index % 10:
+                    cv2.imwrite("frames_from_movies/{}.png".format(index), resized)
+                    cv2.imwrite("bw_frames/{}.png".format(index), gray_image)
+                else:
+                    cv2.imwrite("test/{}.png".format(index), gray_image)
 
     @staticmethod
     def prepare_folders():
@@ -45,3 +47,6 @@ class PicturePreparation:
             os.mkdir('frames_from_movies')
         if not os.path.exists('bw_frames'):
             os.mkdir('bw_frames')
+        if not os.path.exists('test'):
+            os.mkdir('test')
+
