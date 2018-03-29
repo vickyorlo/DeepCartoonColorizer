@@ -18,13 +18,6 @@
 .idea/dictionaries
 .idea
 
-# Files not relevant for running project
-/model*
-/result*
-/test*
-/bw_frames*
-/frames_from_movie
-
 # Sensitive or high-churn files:
 .idea/**/dataSources/
 .idea/**/dataSources.ids
@@ -205,8 +198,9 @@ $RECYCLE.BIN/
 bw_frames
 frames_from_movies
 test
-result
+result*
 *.mp4
+*.avi
 
 # VS code
 .vscode
