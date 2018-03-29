@@ -20,7 +20,7 @@ import tensorflow as tf
 
 # Get images
 X = []
-for filename in [filename for filename in os.listdir('frames_from_movies/')[:1000:10] if filename.endswith(".png")]:
+for filename in [filename for filename in os.listdir('frames_from_movies/')[:1000:5] if filename.endswith(".png")]:
     X.append(img_to_array(load_img('frames_from_movies/' + filename)))
 X = np.array(X, dtype=float)
 Xtrain = 1.0 / 255 * X
@@ -82,7 +82,7 @@ datagen = ImageDataGenerator(
     horizontal_flip=True)
 
 # Generate training data
-batch_size = 20
+batch_size = 1
 
 
 def image_a_b_gen(batch_size):
@@ -97,8 +97,8 @@ def image_a_b_gen(batch_size):
 
 
 # Train model
-EPOCHS = 100
-model.compile(optimizer='rmsprop', loss='mse')
+EPOCHS = 50
+model.compile(optimizer='adamax', loss='mse', metrics=['mae', 'acc'])
 model.fit_generator(image_a_b_gen(batch_size), epochs=EPOCHS, steps_per_epoch=1)
 
 model.save_weights('model_{}e_1000pic.h5'.format(EPOCHS))
