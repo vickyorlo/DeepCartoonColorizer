@@ -49,4 +49,3 @@ class PicturePreparation:
             os.mkdir('bw_frames')
         if not os.path.exists('test'):
             os.mkdir('test')
-
