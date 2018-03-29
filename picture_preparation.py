@@ -22,8 +22,6 @@ class PicturePreparation:
 
         video.release()
 
-        return self.images
-
     def save_images(self):
         """
         Saves coloured and black&white images into two separate folders.
@@ -31,11 +29,14 @@ class PicturePreparation:
         self.prepare_images()
         PicturePreparation.prepare_folders()
         for index, image in tqdm(enumerate(self.images)):
-            resized = cv2.resize(image, (int(256), int(256)))
-            cv2.imwrite("frames_from_movies/{}.png".format(index), resized)
-            gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-            resized_gray = cv2.resize(gray_image, (256, 256))
-            cv2.imwrite("bw_frames/{}.png".format(index), resized_gray)
+            if not (image is None):
+                resized = cv2.resize(image, (int(256), int(256)))
+                gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
+                if index % 10:
+                    cv2.imwrite("frames_from_movies/{}.png".format(index), resized)
+                    cv2.imwrite("bw_frames/{}.png".format(index), gray_image)
+                else:
+                    cv2.imwrite("test/{}.png".format(index), gray_image)
 
     @staticmethod
     def prepare_folders():
@@ -46,3 +47,6 @@ class PicturePreparation:
             os.mkdir('frames_from_movies')
         if not os.path.exists('bw_frames'):
             os.mkdir('bw_frames')
+        if not os.path.exists('test'):
+            os.mkdir('test')
+

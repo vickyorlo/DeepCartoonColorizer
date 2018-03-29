@@ -201,5 +201,17 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Pictures
+bw_frames
+frames_from_movies
+test
+result
+*.mp4
+
+# VS code
+.vscode
+
+# Models
+*.h5
 
 # End of https://www.gitignore.io/api/python,windows,pycharm,jupyternotebook
