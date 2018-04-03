@@ -14,5 +14,5 @@ pic_prepare = PicturePreparation(filename)
 pic_prepare.save_images()
 
 
-movie_prep = MoviePreparation('bw_frames')
-movie_prep.save_movie()
+# movie_prep = MoviePreparation('bw_frames')
+# movie_prep.save_movie()
