@@ -208,4 +208,7 @@ result*
 # Models
 *.h5
 
+# logs
+logs
+
 # End of https://www.gitignore.io/api/python,windows,pycharm,jupyternotebook
