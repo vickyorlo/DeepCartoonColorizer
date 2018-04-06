@@ -30,13 +30,14 @@ class PicturePreparation:
         PicturePreparation.prepare_folders()
         for index, image in tqdm(enumerate(self.images)):
             if not (image is None):
-                resized = cv2.resize(image, (int(256), int(256)))
                 if index < 79 or (index > 700 and index < 10500):
+                    resized = cv2.resize(image, (int(256), int(256)))
                     if index % 10:
                         cv2.imwrite("frames_from_movies/{}.png".format(index), resized)
                     else:
                         gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
                         cv2.imwrite("test/{}.png".format(index), gray_image)
+
 
     @staticmethod
     def prepare_folders():

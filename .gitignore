@@ -195,7 +195,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # Pictures
-bw_frames
 frames_from_movies
 test
 result*
