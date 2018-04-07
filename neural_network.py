@@ -12,12 +12,10 @@ import tensorflow as tf
 
 
 X = []
-'''
-for filename in [filename for filename in os.listdir('frames_from_movies/')[:5:5] if filename.endswith(".png")]:
+
+for filename in [filename for filename in os.listdir('frames_from_movies/')[:300] if filename.endswith(".png")]:
     X.append(img_to_array(load_img('frames_from_movies/' + filename)))
-    '''
-for i in range(0,1000):
-    X.append(img_to_array(load_img('frames_from_movies/1.png')))
+
 
 X = np.array(X, dtype=float)
 Xtrain = (1.0 / 255) * X
@@ -74,27 +72,28 @@ network_output = Conv2D(2, (3, 3), activation='tanh', padding='same')(network)
 model = Model(inputs=network_input, outputs=network_output)
 
 batch_size = 1
+EPOCHS = 3
 
 def image_a_b_gen(batch_size):
-    for batch in Xtrain:
-        batch = batch.reshape((1,) + batch.shape)
-        lab_batch = rgb2lab(batch)
-        X_batch = lab_batch[:, :, :, 0] / 128
-        X_batch = X_batch.reshape(X_batch.shape + (1,))
-        Y_batch = lab_batch[:, :, :, 1:] / 128
-        yield (X_batch, Y_batch)
+    while True:
+        for batch in Xtrain:
+            batch = batch.reshape((1,) + batch.shape)
+            lab_batch = rgb2lab(batch)
+            X_batch = lab_batch[:, :, :, 0] / 128
+            X_batch = X_batch.reshape(X_batch.shape + (1,))
+            Y_batch = lab_batch[:, :, :, 1:] / 128
+            yield (X_batch, Y_batch)
 
 opt = Adamax(lr=0.001)
 tbCallback = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=32, write_graph=True, write_grads=False, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
-EPOCHS = 1000
 model.compile(optimizer=opt, loss='mse', metrics=['mse', 'acc'])
-model.fit_generator(image_a_b_gen(batch_size), epochs=EPOCHS, steps_per_epoch=1, callbacks=[tbCallback])
+model.fit_generator(image_a_b_gen(batch_size), epochs=EPOCHS, steps_per_epoch=len(Xtrain), callbacks=[tbCallback])
 
 model.save_weights('model_{}e_1000pic.h5'.format(EPOCHS))
 model.save('model_{}e_1000pic_m.h5'.format(EPOCHS))
 
 color_me = []
-for filename in [filename for filename in os.listdir('test/')[:5:5] if filename.endswith(".png")]:
+for filename in [filename for filename in os.listdir('test/')[:200:5] if filename.endswith(".png")]:
     color_me.append(img_to_array(load_img('test/' + filename)))
 color_me = np.array(color_me, dtype=float)
 color_me = rgb2lab((1.0 / 255) * color_me)[:, :, :, 0] / 128
