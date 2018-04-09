@@ -13,7 +13,7 @@ import tensorflow as tf
 
 X = []
 
-for filename in [filename for filename in os.listdir('frames_from_movies/')[:300] if filename.endswith(".png")]:
+for filename in [filename for filename in os.listdir('frames_from_movies/')[110:185] if filename.endswith(".png")]:
     X.append(img_to_array(load_img('frames_from_movies/' + filename)))
 
 
@@ -33,31 +33,32 @@ inception_output = concatenate([first_path, second_path, third_path], axis = 3)
 
 network = Conv2D(16, (3, 3), activation='relu', padding='same')(inception_output)
 network = Conv2D(16, (3, 3), activation='tanh', padding='same')(network)
+network = Conv2D(16, (3, 3), activation='relu', padding='same')(network)
 network = MaxPooling2D((2,2))(network)
 network = Dropout(0.25)(network)
-network = Conv2D(32, (3, 3), activation='relu', padding='same')(network)
 network = Conv2D(32, (3, 3), activation='tanh', padding='same')(network)
 network = Conv2D(32, (3, 3), activation='relu', padding='same')(network)
+network = Conv2D(32, (3, 3), activation='tanh', padding='same')(network)
 network = MaxPooling2D((2,2))(network)
 network = Dropout(0.25)(network)
-network = Conv2D(64, (3, 3), activation='tanh', padding='same')(network)
 network = Conv2D(64, (3, 3), activation='relu', padding='same')(network)
 network = Conv2D(64, (3, 3), activation='tanh', padding='same')(network)
+network = Conv2D(64, (3, 3), activation='relu', padding='same')(network)
 network = MaxPooling2D((2,2))(network)
 network = Dropout(0.4)(network)
-network = Conv2D(128, (3, 3), activation='relu', padding='same')(network)
 network = Conv2D(128, (3, 3), activation='tanh', padding='same')(network)
 network = Conv2D(128, (3, 3), activation='relu', padding='same')(network)
+network = Conv2D(128, (3, 3), activation='tanh', padding='same')(network)
 network = MaxPooling2D((2,2))(network)
 network = Dropout(0.4)(network)
-network = Conv2D(256, (3, 3), activation='tanh', padding='same')(network)
 network = Conv2D(256, (3, 3), activation='relu', padding='same')(network)
 network = Conv2D(256, (3, 3), activation='tanh', padding='same')(network)
+network = Conv2D(256, (3, 3), activation='relu', padding='same')(network)
 network = UpSampling2D((2, 2))(network)
 network = Dropout(0.4)(network)
-network = Conv2D(128, (3, 3), activation='relu', padding='same')(network)
 network = Conv2D(128, (3, 3), activation='tanh', padding='same')(network)
 network = Conv2D(128, (3, 3), activation='relu', padding='same')(network)
+network = Conv2D(128, (3, 3), activation='tanh', padding='same')(network)
 network = UpSampling2D((2, 2))(network)
 network = Dropout(0.4)(network)
 network = Conv2D(64, (3, 3), activation='relu', padding='same')(network)
@@ -70,9 +71,9 @@ network = Conv2D(32, (3, 3), activation='relu', padding='same')(network)
 network = Conv2D(32, (3, 3), activation='tanh', padding='same')(network)
 network = UpSampling2D((2, 2))(network)
 network = Dropout(0.25)(network)
-network = Conv2D(16, (3, 3), activation='tanh', padding='same')(network)
 network = Conv2D(16, (3, 3), activation='relu', padding='same')(network)
 network = Conv2D(16, (3, 3), activation='tanh', padding='same')(network)
+network = Conv2D(16, (3, 3), activation='relu', padding='same')(network)
 
 first_path_2 = Conv2D(8, (3,3), padding='same', activation='relu')(network)
 first_path_2 = Conv2D(4, (3,3), padding='same', activation='relu')(first_path_2)
@@ -83,8 +84,8 @@ third_path_2 = Conv2D(2, (3,3), padding='same', activation='relu')(third_path_2)
 
 inception_output_2 = concatenate([first_path_2, second_path_2, third_path_2], axis = 3)
 
-network = Conv2D(2, (3, 3), activation='relu', padding='same')(inception_output_2)
-network_output = Conv2D(2, (3, 3), activation='tanh', padding='same')(network)
+network = Conv2D(2, (3, 3), activation='tanh', padding='same')(inception_output_2)
+network_output = Conv2D(2, (3, 3), activation='relu', padding='same')(network)
 
 model = Model(inputs=network_input, outputs=network_output)
 
@@ -110,7 +111,7 @@ model.save_weights('model_{}e_1000pic.h5'.format(EPOCHS))
 model.save('model_{}e_1000pic_m.h5'.format(EPOCHS))
 
 color_me = []
-for filename in [filename for filename in os.listdir('test/')[:200:5] if filename.endswith(".png")]:
+for filename in [filename for filename in os.listdir('test/')[11:21] if filename.endswith(".png")]:
     color_me.append(img_to_array(load_img('test/' + filename)))
 color_me = np.array(color_me, dtype=float)
 color_me = rgb2lab((1.0 / 255) * color_me)[:, :, :, 0] / 128
