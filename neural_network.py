@@ -1,6 +1,6 @@
 from keras.layers import Conv2D, UpSampling2D, Input, Reshape, concatenate, MaxPooling2D, Dropout, BatchNormalization, \
     GaussianDropout, AlphaDropout
-from keras.models import Model
+from keras.models import Model, load_model
 from keras.preprocessing.image import img_to_array, load_img
 from keras.optimizers import Adamax
 from skimage.color import rgb2lab, lab2rgb, rgb2gray, gray2rgb
@@ -10,12 +10,14 @@ import os
 
 
 class NeuralNetwork(object):
-    def __init__(self, training_path, batch_size=1, epochs=1):
+    def __init__(self, training_path, epochs=1, path_to_model=None):
         self.training_path = training_path
         self.training_images = []
-        self.batch_size = batch_size
         self.epochs = epochs
-        self.model = None
+        if path_to_model is None:
+            self.model = self.neural_network_structure()
+        else:
+            self.model = self.load_model_from_file(path_to_model)
 
     def prepare_images(self):
         images = []
@@ -102,9 +104,10 @@ class NeuralNetwork(object):
         network = Conv2D(4, (3, 3), activation='relu', padding='same')(inception_output_2)
         network_output = Conv2D(2, (3, 3), activation='tanh', padding='same')(network)
 
-        model = Model(inputs=network_input, outputs=network_output)
+        return Model(inputs=network_input, outputs=network_output)
 
-        self.model = model
+    def load_model_from_file(self, filename):
+        return load_model(filename)
 
     def image_a_b_gen(self):
         while True:
@@ -133,6 +136,5 @@ class NeuralNetwork(object):
 
     def run(self):
         self.prepare_images()
-        self.neural_network_structure()
         self.train()
         self.save_model()
