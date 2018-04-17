@@ -11,7 +11,7 @@ For now we encourage you to use Anaconda package manager and creation of the env
 In order to create an environment you have to run the following command providing the environment name:
 
 ```
-conda env create -n <your_environment_name> -f enviroment.yml
+conda env create -n <your_environment_name> -f <enviroment_file_name>
 ```
 
 To activate the environment you have to run the following command:
