@@ -210,4 +210,6 @@ result*
 # logs
 logs
 
+test_result
+
 # End of https://www.gitignore.io/api/python,windows,pycharm,jupyternotebook
