@@ -13,8 +13,8 @@ class PicturePreparation:
         """
         Saves each frame of a movie as a list of consecutive frames
         """
-        for i in os.listdir(self.path):
-            video = cv2.VideoCapture(i)
+        for filename in os.listdir(self.path):
+            video = cv2.VideoCapture(self.path + "/" + filename)
 
             success = True
             while success:

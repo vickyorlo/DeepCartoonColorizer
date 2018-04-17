@@ -15,19 +15,20 @@ class NeuralNetwork(object):
         self.training_images = []
         self.epochs = epochs
         if path_to_model is None:
-            self.model = self.neural_network_structure()
+            self.model = NeuralNetwork.neural_network_structure()
         else:
-            self.model = self.load_model_from_file(path_to_model)
+            self.model = NeuralNetwork.load_model_from_file(path_to_model)
 
     def prepare_images(self):
         images = []
-        for file_name in [filename for filename in os.listdir(self.training_path)[::100] if filename.endswith(".png")]:
+        for file_name in [filename for filename in os.listdir(self.training_path) if filename.endswith(".png")]:
             images.append(img_to_array(load_img(os.path.join(self.training_path, file_name))))
 
         images = np.array(images, dtype=float)
         self.training_images = (1.0 / 255) * images
 
-    def neural_network_structure(self):
+    @staticmethod
+    def neural_network_structure():
         network_input = Input(shape=(256, 256, 1,))
 
         first_path = Conv2D(4, (3, 3), padding='same', activation='relu')(network_input)
@@ -106,7 +107,8 @@ class NeuralNetwork(object):
 
         return Model(inputs=network_input, outputs=network_output)
 
-    def load_model_from_file(self, filename):
+    @staticmethod
+    def load_model_from_file(filename):
         return load_model(filename)
 
     def image_a_b_gen(self):
