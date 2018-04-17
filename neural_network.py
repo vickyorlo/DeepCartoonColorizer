@@ -14,7 +14,7 @@ import tensorflow as tf
 
 X = []
 
-for filename in [filename for filename in os.listdir('frames_from_movies/')[100:120] if filename.endswith(".png")]:
+for filename in [filename for filename in os.listdir('frames_from_movies/') if filename.endswith(".png")]:
     X.append(img_to_array(load_img('frames_from_movies/' + filename)))
 
 
