@@ -28,7 +28,7 @@ def main(argv):
         epochs = None
 
     if model is not None and os.path.isfile(model):
-        nn = NeuralNetwork('frames_from_movies', model, epochs)
+        nn = NeuralNetwork('frames_from_movies', epochs, model)
         if input is not None and os.path.isdir(input):
             pic_prepare = PicturePreparation(input)
             pic_prepare.save_images()
