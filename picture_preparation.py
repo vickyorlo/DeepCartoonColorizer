@@ -13,14 +13,15 @@ class PicturePreparation:
         """
         Saves each frame of a movie as a list of consecutive frames
         """
-        video = cv2.VideoCapture(self.path)
+        for filename in os.listdir(self.path):
+            video = cv2.VideoCapture(self.path + "/" + filename)
 
-        success = True
-        while success:
-            success, image = video.read()
-            self.images.append(image)
+            success = True
+            while success:
+                success, image = video.read()
+                self.images.append(image)
 
-        video.release()
+            video.release()
 
     def save_images(self):
         """
@@ -30,15 +31,12 @@ class PicturePreparation:
         PicturePreparation.prepare_folders()
         for index, image in tqdm(enumerate(self.images)):
             if not (image is None):
-                if index < 79 or (index > 700 and index < 10500):
-                    resized = cv2.resize(image, (int(256), int(256)))
-                    if (index % 100 == 0):
-                        gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-                        cv2.imwrite("test/{}.png".format(index), gray_image)
-                    elif (index % 10 == 0):
-                        cv2.imwrite("frames_from_movies/{}.png".format(index), resized)
-
-
+                resized = cv2.resize(image, (int(256), int(256)))
+                if index % 100 == 0:
+                    gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
+                    cv2.imwrite("test/{}.png".format(index), gray_image)
+                elif index % 10 == 0:
+                    cv2.imwrite("frames_from_movies/{}.png".format(index), resized)
 
     @staticmethod
     def prepare_folders():
