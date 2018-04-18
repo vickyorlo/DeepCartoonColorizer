@@ -1,7 +1,7 @@
 from keras.layers import Conv2D, UpSampling2D, Input, Reshape, concatenate, MaxPooling2D, Dropout, BatchNormalization, \
     GaussianDropout, AlphaDropout
 from keras.models import Model, load_model
-from keras.preprocessing.image import img_to_array, load_img
+from keras.preprocessing.image import img_to_array, load_img, ImageDataGenerator
 from keras.optimizers import Adamax
 from skimage.color import rgb2lab, lab2rgb, rgb2gray, gray2rgb
 import keras
@@ -12,21 +12,13 @@ import os
 class NeuralNetwork(object):
     def __init__(self, training_path, epochs=1, batch_size=30, path_to_model=None):
         self.training_path = training_path
-        self.training_images = []
+        self.training_images = [filename for filename in os.listdir(self.training_path)[::100] if filename.endswith(".png")]
         self.epochs = epochs
         self.batch_size = batch_size
         if path_to_model is None:
             self.model = NeuralNetwork.neural_network_structure()
         else:
             self.model = NeuralNetwork.load_model_from_file(path_to_model)
-
-    def prepare_images(self):
-        images = []
-        for file_name in [filename for filename in os.listdir(self.training_path) if filename.endswith(".png")]:
-            images.append(img_to_array(load_img(os.path.join(self.training_path, file_name))))
-
-        images = np.array(images, dtype=float)
-        self.training_images = (1.0 / 255) * images
 
     @staticmethod
     def neural_network_structure():
@@ -111,16 +103,17 @@ class NeuralNetwork(object):
     @staticmethod
     def load_model_from_file(filename):
         return load_model(filename)
-
+        
     def image_a_b_gen(self):
-        while True:
-            for batch in self.training_images:
-                batch = batch.reshape((1,) + batch.shape) 
-                lab_batch = rgb2lab(batch)
-                x_batch = lab_batch[:, :, :, 0] / 128
-                x_batch = x_batch.reshape(x_batch.shape + (1,))
-                y_batch = lab_batch[:, :, :, 1:] / 128
-                yield (x_batch, y_batch)
+        datagen = ImageDataGenerator(rescale=1./255, shear_range=0.2, zoom_range=0.2, rotation_range=20, horizontal_flip=True)
+        for batch in datagen.flow_from_directory(self.training_path):
+            grayscaled_rgb = gray2rgb(rgb2gray(batch))
+            embed = create_inception_embedding(grayscaled_rgb)
+            lab_batch = rgb2lab(batch)
+            X_batch = lab_batch[:,:,:,0]
+            X_batch = X_batch.reshape(X_batch.shape+(1,))
+            Y_batch = lab_batch[:,:,:,1:] / 128
+            yield ([X_batch, create_inception_embedding(grayscaled_rgb)], Y_batch)
 
     def train(self):
         # tensorboard --logdir=path/to/log-directory
@@ -129,7 +122,7 @@ class NeuralNetwork(object):
                                                   write_grads=False, write_images=False, embeddings_freq=0,
                                                   embeddings_layer_names=None, embeddings_metadata=None)
         self.model.compile(optimizer=opt, loss='mse', metrics=['mae', 'acc'])
-        self.model.fit_generator(self.image_a_b_gen(), epochs=self.epochs,batch_size=self.batch_size,
+        self.model.fit_generator(self.image_a_b_gen(), epochs=self.epochs,
                                  steps_per_epoch=len(self.training_images),
                                  callbacks=[tb_callback])
 
@@ -138,6 +131,6 @@ class NeuralNetwork(object):
         self.model.save('model_{}e_{}pic_m.h5'.format(self.epochs, self.training_images.__len__()))
 
     def run(self):
-        self.prepare_images()
+
         self.train()
         self.save_model()
