@@ -10,10 +10,11 @@ import os
 
 
 class NeuralNetwork(object):
-    def __init__(self, training_path, epochs=1, path_to_model=None):
+    def __init__(self, training_path, epochs=1, batch_size=30, path_to_model=None):
         self.training_path = training_path
         self.training_images = []
         self.epochs = epochs
+        self.batch_size = batch_size
         if path_to_model is None:
             self.model = NeuralNetwork.neural_network_structure()
         else:
@@ -114,7 +115,7 @@ class NeuralNetwork(object):
     def image_a_b_gen(self):
         while True:
             for batch in self.training_images:
-                batch = batch.reshape((1,) + batch.shape)
+                batch = batch.reshape((1,) + batch.shape) 
                 lab_batch = rgb2lab(batch)
                 x_batch = lab_batch[:, :, :, 0] / 128
                 x_batch = x_batch.reshape(x_batch.shape + (1,))
@@ -128,7 +129,7 @@ class NeuralNetwork(object):
                                                   write_grads=False, write_images=False, embeddings_freq=0,
                                                   embeddings_layer_names=None, embeddings_metadata=None)
         self.model.compile(optimizer=opt, loss='mse', metrics=['mae', 'acc'])
-        self.model.fit_generator(self.image_a_b_gen(), epochs=self.epochs,
+        self.model.fit_generator(self.image_a_b_gen(), epochs=self.epochs,batch_size=self.batch_size,
                                  steps_per_epoch=len(self.training_images),
                                  callbacks=[tb_callback])
 

@@ -13,14 +13,16 @@ def main():
     parser.add_argument('-i', help='folder with movie files')
     parser.add_argument('-m', help='the model file')
     parser.add_argument('-e', type=int, help='amount of epochs', default=1)
+    parser.add_argument('-b', type=int, help='batch_size', default=30)
     args = parser.parse_args()
 
     movies = args.i
     model = args.m
     epochs = args.e
+    batch_size = args.b
 
     if model and os.path.isfile(model):
-        nn = NeuralNetwork('frames_from_movies', epochs, model)
+        nn = NeuralNetwork('frames_from_movies', epochs, batch_size, model)
         if movies is not None and os.path.isdir(movies):
             pic_prepare = PicturePreparation(movies)
             pic_prepare.save_images()
@@ -31,7 +33,7 @@ def main():
     elif movies and os.path.isdir(movies):
         pic_prepare = PicturePreparation(movies)
         pic_prepare.save_images()
-        nn = NeuralNetwork('frames_from_movies', epochs)
+        nn = NeuralNetwork('frames_from_movies', epochs, batch_size)
         nn.run()
 
     # movie_prep = MoviePreparation('bw_frames')
