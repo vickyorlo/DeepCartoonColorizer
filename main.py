@@ -12,8 +12,8 @@ def main():
     parser = argparse.ArgumentParser(description='parser')
     parser.add_argument('-i', help='folder with movie files')
     parser.add_argument('-m', help='the model file')
-    parser.add_argument('-e', type=int, help='amount of epochs', default=1)
-    parser.add_argument('-b', type=int, help='batch_size', default=30)
+    parser.add_argument('-e', type=int, help='amount of epochs', default=10)
+    parser.add_argument('-b', type=int, help='batch_size', default=1)
     parser.add_argument('-s', type=int, help='how many files to skip when creating learning set', default=25)
     args = parser.parse_args()
 
