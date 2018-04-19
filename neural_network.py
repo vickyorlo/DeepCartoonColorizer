@@ -129,7 +129,7 @@ class NeuralNetwork(object):
                                                   write_grads=False, write_images=False, embeddings_freq=0,
                                                   embeddings_layer_names=None, embeddings_metadata=None)
         self.model.compile(optimizer=opt, loss='mse', metrics=['mae', 'acc'])
-        self.model.fit_generator(self.image_a_b_gen(), epochs=self.epochs,batch_size=self.batch_size,
+        self.model.fit_generator(self.image_a_b_gen(), epochs=self.epochs,
                                  steps_per_epoch=len(self.training_images),
                                  callbacks=[tb_callback])
 

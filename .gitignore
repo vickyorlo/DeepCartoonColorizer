@@ -200,6 +200,8 @@ test
 result*
 *.mp4
 *.avi
+*.mkv
+*.webm
 
 # VS code
 .vscode
