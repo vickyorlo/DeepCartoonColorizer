@@ -28,6 +28,9 @@ class PicturePreparation:
                 images.append(image)
 
             video.release()
+
+            if not os.path.exists('frames_from_movies/{}'.format(filename)):
+                os.mkdir('frames_from_movies/{}'.format(filename))
             for index, image in tqdm(enumerate(images)):
                 if image is not None:
                     resized = cv2.resize(image, (int(256), int(256)))
@@ -36,6 +39,6 @@ class PicturePreparation:
                             gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
                             cv2.imwrite("test/{}.png".format(picture_enumerator), gray_image)
                         else:
-                            cv2.imwrite("frames_from_movies/{}.png".format(picture_enumerator), resized)
+                            cv2.imwrite("frames_from_movies/{}/{}.png".format(filename,picture_enumerator), resized)
                     picture_enumerator += 1
             images.clear()

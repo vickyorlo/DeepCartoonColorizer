@@ -1,32 +1,29 @@
 from keras.layers import Conv2D, UpSampling2D, Input, Reshape, concatenate, MaxPooling2D, Dropout, BatchNormalization, \
     GaussianDropout, AlphaDropout
 from keras.models import Model, load_model
-from keras.preprocessing.image import img_to_array, load_img
+from keras.preprocessing.image import img_to_array, load_img, ImageDataGenerator
 from keras.optimizers import Adamax
 from skimage.color import rgb2lab, lab2rgb, rgb2gray, gray2rgb
+from math import ceil
 import keras
 import numpy as np
 import os
 
 
 class NeuralNetwork(object):
-    def __init__(self, training_path, epochs=1, batch_size=30, path_to_model=None):
+    def __init__(self, training_path, epochs=10, batch_size=1, path_to_model=None):
         self.training_path = training_path
-        self.training_images = []
+
+        self.training_set_size = 0
+        for direct in [dirname for dirname in os.listdir(self.training_path)]:
+            self.training_set_size += len([filename for filename in os.listdir(self.training_path + "/" + direct) if filename.endswith(".png")])
         self.epochs = epochs
         self.batch_size = batch_size
+        self.datagen = ImageDataGenerator(shear_range=0.2, zoom_range=0.2, rotation_range=20, horizontal_flip=True)
         if path_to_model is None:
             self.model = NeuralNetwork.neural_network_structure()
         else:
             self.model = NeuralNetwork.load_model_from_file(path_to_model)
-
-    def prepare_images(self):
-        images = []
-        for file_name in [filename for filename in os.listdir(self.training_path) if filename.endswith(".png")]:
-            images.append(img_to_array(load_img(os.path.join(self.training_path, file_name))))
-
-        images = np.array(images, dtype=float)
-        self.training_images = (1.0 / 255) * images
 
     @staticmethod
     def neural_network_structure():
@@ -111,26 +108,27 @@ class NeuralNetwork(object):
     @staticmethod
     def load_model_from_file(filename):
         return load_model(filename)
-
+        
     def image_a_b_gen(self):
-        while True:
-            for batch in self.training_images:
-                batch = batch.reshape((1,) + batch.shape) 
-                lab_batch = rgb2lab(batch)
-                x_batch = lab_batch[:, :, :, 0] / 128
-                x_batch = x_batch.reshape(x_batch.shape + (1,))
-                y_batch = lab_batch[:, :, :, 1:] / 128
-                yield (x_batch, y_batch)
+
+        for batch in self.datagen.flow_from_directory(self.training_path, batch_size=self.batch_size):
+            _batch = (1.0 / 255) * batch[0]
+            lab_batch = rgb2lab(_batch)
+            x_batch = lab_batch[:, :, :, 0] / 128
+            x_batch = x_batch.reshape(x_batch.shape + (1,))
+            y_batch = lab_batch[:, :, :, 1:] / 128
+            yield (x_batch, y_batch)
+
 
     def train(self):
         # tensorboard --logdir=path/to/log-directory
         opt = Adamax(lr=0.001)
-        tb_callback = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=32, write_graph=True,
+        tb_callback = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=self.batch_size, write_graph=True,
                                                   write_grads=False, write_images=False, embeddings_freq=0,
                                                   embeddings_layer_names=None, embeddings_metadata=None)
         self.model.compile(optimizer=opt, loss='mse', metrics=['mae', 'acc'])
         self.model.fit_generator(self.image_a_b_gen(), epochs=self.epochs,
-                                 steps_per_epoch=len(self.training_images),
+                                 steps_per_epoch=int(ceil(float(self.training_set_size) / self.batch_size)),
                                  callbacks=[tb_callback])
 
     def save_model(self):
@@ -138,6 +136,5 @@ class NeuralNetwork(object):
         self.model.save('model_{}e_{}pic_m.h5'.format(self.epochs, self.training_images.__len__()))
 
     def run(self):
-        self.prepare_images()
         self.train()
         self.save_model()
