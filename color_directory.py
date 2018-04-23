@@ -17,7 +17,7 @@ class PictureColorization(object):
         for filename in [filename for filename in os.listdir(self.directory) if filename.endswith(".png")]:
             color_me.append(img_to_array(load_img(self.directory + '/' + filename)))
         color_me = np.array(color_me, dtype=float)
-        color_me = rgb2lab((1.0 / 255) * color_me)[:, :, :, 0] / 128
+        color_me = rgb2lab((1.0 / 255) * color_me)[:, :, :, 0] / 512
         color_me = color_me.reshape(color_me.shape + (1,))
 
         return color_me
@@ -25,7 +25,7 @@ class PictureColorization(object):
     def predict(self):
         images_for_colorization = self.prepare_images()
         output = self.model.predict(images_for_colorization)
-        return output * 128
+        return output * 512
 
     def save(self, directory='test_result'):
         if not os.path.exists(directory):
@@ -36,7 +36,7 @@ class PictureColorization(object):
 
         for i in tqdm(range(len(colorized_images))):
             cur = np.zeros((256, 256, 3))
-            cur[:, :, 0] = images_for_colorization[i][:, :, 0] * 128
+            cur[:, :, 0] = images_for_colorization[i][:, :, 0] * 512
             cur[:, :, 1:] = colorized_images[i][:, :, :]
             imsave(directory + "/img_" + str(i) + ".png", lab2rgb(cur))
 

@@ -29,7 +29,7 @@ def main():
             PicturePreparation().prepare_images(movies,stride)
             nn.run()
 
-        colorizer = PictureColorization(nn.model, "test")
+        colorizer = PictureColorization(nn.model, "test/test")
         colorizer.save()
     
     elif movies and os.path.isdir(movies):
