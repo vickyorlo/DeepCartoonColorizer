@@ -1,16 +1,16 @@
-# -*- coding: utf-8 -*-
-
 import os
 import cv2
 import random
 
-from tqdm import tqdm
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
 from shutil import rmtree
 from unidecode import unidecode
 
 
 class PicturePreparation(object):
+
+    def __init__(self, workers):
+        self.workers = workers if workers else cpu_count()
 
     @staticmethod
     def prepare_images(path_to_directory, filename):
@@ -40,8 +40,7 @@ class PicturePreparation(object):
 
         video.release()
 
-    @staticmethod
-    def process_all_movies(path):
+    def process_all_movies(self, path):
         # if os.path.exists('frames_from_movies'):
         #     rmtree('frames_from_movies')
         #     rmtree('test')
@@ -61,17 +60,15 @@ class PicturePreparation(object):
 
         function_input = [(path, filename) for filename in files_in_directory]
 
-        function_input = [argument for argument in function_input if os.path.exists(os.path.join(argument[0], argument[1]))]
+        function_input = [argument for argument in function_input if not
+                          os.path.exists(os.path.join('frames_from_movies', argument[1]))]
 
-        print(function_input)
-        with Pool(processes=2) as pool:
+        with Pool(processes=self.workers) as pool:
             pool.starmap_async(PicturePreparation.prepare_images, function_input)
             pool.close()
             pool.join()
 
 
 if __name__ == "__main__":
-    pp = PicturePreparation()
-    # pp.prepare_images('filmy', u"Teraz Miki! - Jak grać w baseball.mp4")
-
+    pp = PicturePreparation(workers=1)
     pp.process_all_movies('filmy')
