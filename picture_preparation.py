@@ -35,17 +35,16 @@ class PicturePreparation(object):
                 resized = cv2.resize(image, (int(256), int(256)))
                 cv2.imwrite("frames_from_movies/{}/{}.png".format(filename, index), resized)
                 gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-                cv2.imwrite("test/{}.png".format(index), gray_image)
+                cv2.imwrite("test/{}/{}.png".format(filename, index), gray_image)
             index += 1
-            # print(filename, index)
 
         video.release()
 
     @staticmethod
     def process_all_movies(path):
-        if os.path.exists('frames_from_movies'):
-            rmtree('frames_from_movies')
-            rmtree('test')
+        # if os.path.exists('frames_from_movies'):
+        #     rmtree('frames_from_movies')
+        #     rmtree('test')
 
         if not os.path.exists('frames_from_movies'):
             os.mkdir('frames_from_movies')
@@ -55,9 +54,17 @@ class PicturePreparation(object):
 
         files_in_directory = os.listdir(path)
 
-        function_input = [(path, unidecode(filename)) for filename in files_in_directory][:10]
+        os.chdir(path)
+        [os.rename(filename, unidecode(filename)) for filename in files_in_directory]
+        os.chdir("..")
+        os.listdir(path)
 
-        with Pool(processes=4) as pool:
+        function_input = [(path, filename) for filename in files_in_directory]
+
+        function_input = [argument for argument in function_input if os.path.exists(os.path.join(argument[0], argument[1]))]
+
+        print(function_input)
+        with Pool(processes=2) as pool:
             pool.starmap_async(PicturePreparation.prepare_images, function_input)
             pool.close()
             pool.join()
@@ -65,6 +72,6 @@ class PicturePreparation(object):
 
 if __name__ == "__main__":
     pp = PicturePreparation()
-    pp.prepare_images('filmy', u"Teraz Miki! - Jak grać w baseball.mp4")
+    # pp.prepare_images('filmy', u"Teraz Miki! - Jak grać w baseball.mp4")
 
-    # pp.process_all_movies('filmy')
+    pp.process_all_movies('filmy')
