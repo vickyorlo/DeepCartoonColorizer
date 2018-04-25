@@ -1,44 +1,70 @@
+# -*- coding: utf-8 -*-
+
 import os
 import cv2
-
-from tqdm import tqdm
 import random
 
+from tqdm import tqdm
+from multiprocessing import Pool
+from shutil import rmtree
+from unidecode import unidecode
 
-class PicturePreparation:
+
+class PicturePreparation(object):
 
     @staticmethod
-    def prepare_images(path, stride):
+    def prepare_images(path_to_directory, filename):
         """
         Saves each frame of a movie as a list of consecutive frames
         """
-        images = []
         if not os.path.exists('frames_from_movies'):
             os.mkdir('frames_from_movies')
+            os.mkdir('test')
+
+        if not os.path.exists('frames_from_movies/{}'.format(filename)):
+            os.mkdir('frames_from_movies/{}'.format(filename))
+            os.mkdir('test/{}'.format(filename))
+
+        video = cv2.VideoCapture(os.path.join(path_to_directory, filename))
+        success = True
+        index = 0
+        while success:
+            success, image = video.read()
+
+            if success:
+                resized = cv2.resize(image, (int(256), int(256)))
+                cv2.imwrite("frames_from_movies/{}/{}.png".format(filename, index), resized)
+                gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
+                cv2.imwrite("test/{}.png".format(index), gray_image)
+            index += 1
+            # print(filename, index)
+
+        video.release()
+
+    @staticmethod
+    def process_all_movies(path):
+        if os.path.exists('frames_from_movies'):
+            rmtree('frames_from_movies')
+            rmtree('test')
+
+        if not os.path.exists('frames_from_movies'):
+            os.mkdir('frames_from_movies')
+
         if not os.path.exists('test'):
             os.mkdir('test')
 
-        picture_enumerator = 0
-        for filename in os.listdir(path):
-            video = cv2.VideoCapture(path + "/" + filename)
+        files_in_directory = os.listdir(path)
 
-            success = True
-            while success:
-                success, image = video.read()
-                images.append(image)
+        function_input = [(path, unidecode(filename)) for filename in files_in_directory][:10]
 
-            video.release()
+        with Pool(processes=4) as pool:
+            pool.starmap_async(PicturePreparation.prepare_images, function_input)
+            pool.close()
+            pool.join()
 
-            if not os.path.exists('frames_from_movies/{}'.format(filename)):
-                os.mkdir('frames_from_movies/{}'.format(filename))
-            for index, image in tqdm(enumerate(images)):
-                if image is not None:
-                    resized = cv2.resize(image, (int(256), int(256)))
-                    if index % stride == 0:
-                        if (random.randrange(1,10,1) > 7):
-                            gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
-                            cv2.imwrite("test/{}.png".format(picture_enumerator), gray_image)
-                        else:
-                            cv2.imwrite("frames_from_movies/{}/{}.png".format(filename,picture_enumerator), resized)
-                    picture_enumerator += 1
-            images.clear()
+
+if __name__ == "__main__":
+    pp = PicturePreparation()
+    pp.prepare_images('filmy', u"Teraz Miki! - Jak grać w baseball.mp4")
+
+    # pp.process_all_movies('filmy')
