@@ -28,78 +28,47 @@ class NeuralNetwork(object):
     @staticmethod
     def neural_network_structure():
         network_input = Input(shape=(256, 256, 1,))
-        """
-        first_path = Conv2D(4, (3, 3), padding='same', activation='relu')(network_input)
-        first_path = Conv2D(8, (3, 3), padding='same', activation='relu')(first_path)
-        second_path = Conv2D(8, (3, 3), padding='same', activation='relu')(network_input)
-        second_path = Conv2D(8, (3, 3), padding='same', activation='relu')(second_path)
-        third_path = Conv2D(8, (3, 3), padding='same', activation='relu')(network_input)
-        third_path = Conv2D(16, (3, 3), padding='same', activation='relu')(third_path)
 
-        inception_output = concatenate([first_path, second_path, third_path], axis=3)
-        """
+        #encoder
+
         network = Conv2D(16, (3, 3), activation='relu', padding='same')(network_input)
-        network = Conv2D(16, (3, 3), activation='tanh', padding='same')(network)
-        #network = Conv2D(16, (3, 3), activation='relu', padding='same')(network)
-        # network = BatchNormalization()(network)
         network = MaxPooling2D((2, 2))(network)
-        network = GaussianDropout(0.5)(network)
-        network = Conv2D(32, (3, 3), activation='tanh', padding='same')(network)
-        network = Conv2D(32, (3, 3), activation='relu', padding='same')(network)
-        #network = Conv2D(32, (3, 3), activation='tanh', padding='same')(network)
-        # network = BatchNormalization()(network)
-        network = MaxPooling2D((2, 2))(network)
-        network = GaussianDropout(0.5)(network)
-        network = Conv2D(64, (3, 3), activation='relu', padding='same')(network)
-        network = Conv2D(64, (3, 3), activation='tanh', padding='same')(network)
-        #network = Conv2D(64, (3, 3), activation='relu', padding='same')(network)
-        # network = BatchNormalization()(network)
-        network = MaxPooling2D((2, 2))(network)
-        network = GaussianDropout(0.5)(network)
-        network = Conv2D(128, (3, 3), activation='tanh', padding='same')(network)
-        network = Conv2D(128, (3, 3), activation='relu', padding='same')(network)
-       # network = Conv2D(128, (3, 3), activation='tanh', padding='same')(network)
-        # network = BatchNormalization()(network)
-        network = MaxPooling2D((2, 2))(network)
-        network = GaussianDropout(0.5)(network)
-        network = Conv2D(256, (3, 3), activation='relu', padding='same')(network)
-        network = Conv2D(256, (3, 3), activation='tanh', padding='same')(network)
-        #network = Conv2D(256, (3, 3), activation='relu', padding='same')(network)
-        # network = BatchNormalization()(network)
-        network = UpSampling2D((2, 2))(network)
-        network = GaussianDropout(0.5)(network)
-        network = Conv2D(128, (3, 3), activation='tanh', padding='same')(network)
-        network = Conv2D(128, (3, 3), activation='relu', padding='same')(network)
-        #network = Conv2D(128, (3, 3), activation='tanh', padding='same')(network)
-        # network = BatchNormalization()(network)
-        network = UpSampling2D((2, 2))(network)
-        network = GaussianDropout(0.5)(network)
-        network = Conv2D(64, (3, 3), activation='relu', padding='same')(network)
-        network = Conv2D(64, (3, 3), activation='tanh', padding='same')(network)
-        #network = Conv2D(64, (3, 3), activation='relu', padding='same')(network)
-        # network = BatchNormalization()(network)
-        network = UpSampling2D((2, 2))(network)
-        network = GaussianDropout(0.5)(network)
-        network = Conv2D(32, (3, 3), activation='tanh', padding='same')(network)
-        network = Conv2D(32, (3, 3), activation='relu', padding='same')(network)
-        #network = Conv2D(32, (3, 3), activation='tanh', padding='same')(network)
-        # network = BatchNormalization()(network)
-        network = UpSampling2D((2, 2))(network)
-        network = GaussianDropout(0.5)(network)
-        network = Conv2D(16, (3, 3), activation='relu', padding='same')(network)
-        network = Conv2D(16, (3, 3), activation='tanh', padding='same')(network)
-        #network = Conv2D(16, (3, 3), activation='relu', padding='same')(network)
-        # network = BatchNormalization()(network)
-        """
-        first_path_2 = Conv2D(16, (3, 3), padding='same', activation='relu')(network)
-        first_path_2 = Conv2D(8, (3, 3), padding='same', activation='relu')(first_path_2)
-        second_path_2 = Conv2D(8, (3, 3), padding='same', activation='relu')(network)
-        second_path_2 = Conv2D(8, (3, 3), padding='same', activation='relu')(second_path_2)
-        third_path_2 = Conv2D(8, (3, 3), padding='same', activation='relu')(network)
-        third_path_2 = Conv2D(4, (3, 3), padding='same', activation='relu')(third_path_2)
+        network = BatchNormalization()(network)
 
-        inception_output_2 = concatenate([first_path_2, second_path_2, third_path_2], axis=3)
-        """
+        network = Conv2D(32, (3, 3), activation='relu', padding='same')(network)
+        network = MaxPooling2D((2, 2))(network)
+        network = BatchNormalization()(network)
+
+        network = Conv2D(64, (3, 3), activation='relu', padding='same')(network)
+        network = MaxPooling2D((2, 2))(network)
+        network = BatchNormalization()(network)
+
+        network = Conv2D(128, (3, 3), activation='relu', padding='same')(network)
+        network = MaxPooling2D((2, 2))(network)
+        network = BatchNormalization()(network)
+
+
+        #decoder
+
+        network = Conv2D(256, (3, 3), activation='relu', padding='same')(network)
+        network = BatchNormalization()(network)
+        network = UpSampling2D((2, 2))(network)
+
+        network = Conv2D(128, (3, 3), activation='relu', padding='same')(network)
+        network = UpSampling2D((2, 2))(network)
+        network = BatchNormalization()(network)
+
+        network = Conv2D(64, (3, 3), activation='relu', padding='same')(network)
+        network = UpSampling2D((2, 2))(network)
+        network = BatchNormalization()(network)
+
+        network = Conv2D(32, (3, 3), activation='relu', padding='same')(network)
+        network = UpSampling2D((2, 2))(network)
+        network = BatchNormalization()(network)
+
+        network = Conv2D(16, (3, 3), activation='relu', padding='same')(network)
+        network = BatchNormalization()(network)
+
         network = Conv2D(4, (3, 3), activation='relu', padding='same')(network)
         network_output = Conv2D(2, (3, 3), activation='tanh', padding='same')(network)
 
