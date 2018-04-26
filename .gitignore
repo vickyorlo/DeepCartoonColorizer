@@ -196,7 +196,9 @@ $RECYCLE.BIN/
 
 # Pictures
 frames_from_movies
-test
+training_set
+testing_set
+RESULTS
 result*
 *.mp4
 *.avi

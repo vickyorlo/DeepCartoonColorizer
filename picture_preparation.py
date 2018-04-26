@@ -9,7 +9,7 @@ from unidecode import unidecode
 
 class PicturePreparation(object):
 
-    def __init__(self, workers):
+    def __init__(self, workers=1):
         self.workers = workers if workers else cpu_count()
 
     @staticmethod

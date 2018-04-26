@@ -3,26 +3,26 @@ import random
 import shutil
 
 
-def get_images_from_directory(path):
+def get_images_from_directory(path, stride=1):
     """
     This function returns all png files from the given path argument.
     :param path: str with path to a folder
     :return: list
     """
-    return [filename for filename in os.listdir(path) if filename.endswith('.png')]
+    return [filename for filename in os.listdir(path)[::stride] if filename.endswith('.png')]
 
 
-def get_random_images(iterable, n=100):
+def get_random_images(iterable, p=0.3):
     """
     This function returns random n elements from an iterable.
     :param iterable: list of filenames
-    :param n: int number of random elements
+    :param p: float part of training set
     :return: list
     """
-    return random.choices(iterable, k=n)
+    return random.sample(iterable, k=int(len(iterable) * p))
 
 
-def extract_training_files(original_folder, destination_folder_name='test_img_for_training', n=100):
+def extract_training_set(original_folder, destination_folder_name='training_set',stride=25):
     """
     This function copies images to a destination_folder_name.
     :param original_folder: str path to folder with original images
@@ -30,13 +30,34 @@ def extract_training_files(original_folder, destination_folder_name='test_img_fo
     :param n: int number of images (100 by default)
     """
     if not os.path.isdir(destination_folder_name):
+        shutil.rmtree(destination_folder_name)
         os.mkdir(destination_folder_name)
 
-    directory_contents = get_images_from_directory(original_folder)
-    random_images_names = get_random_images(directory_contents, n)
+    movies = [directory for directory in os.listdir(original_folder) if os.path.isdir(os.path.join(original_folder, directory))]
 
-    [shutil.copy(original_folder + "/" + x, destination_folder_name + "/" + x) for x in random_images_names]
+    [os.mkdir(os.path.join(destination_folder_name, dirname)) for dirname in movies if not os.path.exists(os.path.join(destination_folder_name, dirname))]
+
+    dir_images = [get_images_from_directory(os.path.join(original_folder, movie), stride) for movie in movies]
+
+    for index, movie in enumerate(movies):
+        [shutil.copy(original_folder + "/" + movie + '/' + x, destination_folder_name + "/" + movie + '/' + x) for x in dir_images[index]]
+
+def extract_testing_set(original_folder, testing_folder_name="testing_set"):
+    if not os.path.isdir(testing_folder_name):
+        os.mkdir(testing_folder_name)
+
+    movies = [directory for directory in os.listdir(original_folder) if os.path.isdir(os.path.join(original_folder, directory))]
+
+    dir_images = [get_images_from_directory(os.path.join(original_folder, movie), stride=1) for movie in movies]
+
+    [os.mkdir(os.path.join(testing_folder_name, dirname)) for dirname in movies if not os.path.isdir(os.path.join(testing_folder_name, dirname))]
+
+    for index, movie in enumerate(movies):
+        [shutil.move(original_folder + "/" + movie + '/' + x, testing_folder_name + "/" + movie + '/' + x) for x in get_random_images(dir_images[index])]
+
+
 
 
 if __name__ == "__main__":
-    extract_training_files('frames_from_movies/', n=250)
+    # extract_training_files('frames_from_movies/', n=250)
+    extract_testing_set('training_set')
