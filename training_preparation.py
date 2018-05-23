@@ -22,16 +22,17 @@ def get_random_images(iterable, p=0.3):
     return random.sample(iterable, k=int(len(iterable) * p))
 
 
-def extract_training_set(original_folder, destination_folder_name='training_set',stride=25):
+def extract_frame_set(original_folder, destination_folder_name,stride=25):
     """
     This function copies images to a destination_folder_name.
     :param original_folder: str path to folder with original images
     :param destination_folder_name: folder in which chosen images will be saved
     :param n: int number of images (100 by default)
     """
-    if not os.path.isdir(destination_folder_name):
+    if os.path.isdir(destination_folder_name):
         shutil.rmtree(destination_folder_name)
-        os.mkdir(destination_folder_name)
+    
+    os.mkdir(destination_folder_name)
 
     movies = [directory for directory in os.listdir(original_folder) if os.path.isdir(os.path.join(original_folder, directory))]
 
@@ -42,6 +43,7 @@ def extract_training_set(original_folder, destination_folder_name='training_set'
     for index, movie in enumerate(movies):
         [shutil.copy(original_folder + "/" + movie + '/' + x, destination_folder_name + "/" + movie + '/' + x) for x in dir_images[index]]
 
+'''
 def extract_testing_set(original_folder, testing_folder_name="testing_set"):
     if not os.path.isdir(testing_folder_name):
         os.mkdir(testing_folder_name)
@@ -54,10 +56,12 @@ def extract_testing_set(original_folder, testing_folder_name="testing_set"):
 
     for index, movie in enumerate(movies):
         [shutil.move(original_folder + "/" + movie + '/' + x, testing_folder_name + "/" + movie + '/' + x) for x in get_random_images(dir_images[index])]
-
+'''
 
 
 
 if __name__ == "__main__":
     # extract_training_files('frames_from_movies/', n=250)
-    extract_testing_set('training_set')
+    extract_frame_set('training_frames','training_set',50)
+    extract_frame_set('testing_frames','testing_set',100)
+
