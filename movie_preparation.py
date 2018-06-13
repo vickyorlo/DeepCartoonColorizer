@@ -1,5 +1,6 @@
 import os
 import cv2
+import sys
 
 
 class MoviePreparation:
@@ -32,3 +33,13 @@ class MoviePreparation:
         for image in images:
             movie.write(image)
         movie.release()
+
+
+if __name__ == "__main__":
+
+    try:
+        if sys.argv[1]:
+            mp = MoviePreparation(sys.argv[1])
+            mp.save_movie()
+    except IndexError:
+        print("Please specify path to a folder.")
