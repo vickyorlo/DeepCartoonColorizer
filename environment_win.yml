@@ -43,4 +43,5 @@ dependencies:
     - termcolor==1.1.0
     - tqdm==4.19.9
     - werkzeug==0.14.1
+    - imagehash==4.0
 
