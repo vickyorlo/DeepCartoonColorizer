@@ -35,6 +35,16 @@ deactivate
 ## How to make side by side movie
 To prepare side-by-side movie first we have to make a folder in merge_images directory with a name of a movie. Inside this folder two folders are required. First called 'bw' and second called 'colored'. In the first one place black and white images and colored in the second one. Please remember that images must be names as a integer number representing the frame number (based on this these two images will be merged). Valid file names is for example '0.png' or '1223.png'.
 
+The merged_file directory should look like this:
+```
+├───movie1
+│   ├───bw
+│   └───colored
+└───movie2
+    ├───bw
+    └───colored
+```
+
 Having this part done you can run the following command:
 ```
 python merge_images.py
