@@ -36,7 +36,7 @@ def main():
 
     if args.c and args.m:
         nn = NeuralNetwork('training_set', epochs, batch_size, model)
-        colorizer = PictureColorization(nn.model, "testing_set/")
+        colorizer = PictureColorization(nn.model, "movies_set")
         colorizer.save()
     elif args.m and os.path.isfile(model):
         extract_frame_set('training_frames','training_set',stride=stride)

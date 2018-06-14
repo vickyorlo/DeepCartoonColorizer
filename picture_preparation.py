@@ -78,20 +78,20 @@ class PicturePreparation(object):
     @staticmethod
     def bw_images_from_folder():
 
-        movies = [x for x in os.listdir('frames_from_movies') if os.path.isdir(os.path.join('frames_from_movies', x))]
+        movies = [x for x in os.listdir('testing_frames') if os.path.isdir(os.path.join('testing_frames', x))]
 
-        if not os.path.isdir('bw_frames_from_movies'):
-            os.mkdir('bw_frames_from_movies')
+        if not os.path.isdir('bw_testing_frames'):
+            os.mkdir('bw_testing_frames')
 
         for movie in movies:
-            if not os.path.isdir(os.path.join('bw_frames_from_movies', movie)):
-                os.mkdir(os.path.join('bw_frames_from_movies', movie))
+            if not os.path.isdir(os.path.join('bw_testing_frames', movie)):
+                os.mkdir(os.path.join('bw_testing_frames', movie))
 
-            movie_folder_content = [x for x in os.listdir(os.path.join('frames_from_movies', movie)) if x.endswith('.png')]
+            movie_folder_content = [x for x in os.listdir(os.path.join('testing_frames', movie)) if x.endswith('.png')]
 
             for image in movie_folder_content:
-                bw_image = cv2.imread(os.path.join('frames_from_movies', movie, image), 0)
-                cv2.imwrite(os.path.join(os.path.join('bw_frames_from_movies', movie, image)), bw_image)
+                bw_image = cv2.imread(os.path.join('testing_frames', movie, image), 0)
+                cv2.imwrite(os.path.join(os.path.join('bw_testing_frames', movie, image)), bw_image)
 
 
 if __name__ == "__main__":

@@ -64,4 +64,5 @@ if __name__ == "__main__":
     # extract_training_files('frames_from_movies/', n=250)
     extract_frame_set('training_frames','training_set',50)
     extract_frame_set('testing_frames','testing_set',100)
+    
 
