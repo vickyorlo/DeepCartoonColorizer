@@ -18,8 +18,8 @@ class PicturePreparation(object):
         Saves each frame of a movie as a list of consecutive frames
         """
 
-        if not os.path.exists('{}/{}'.format(path_to_destination,filename)):
-            os.mkdir('{}/{}'.format(path_to_destination,filename))
+        if not os.path.exists('{}/{}'.format(path_to_destination, filename)):
+            os.mkdir('{}/{}'.format(path_to_destination, filename))
 
         video = cv2.VideoCapture(os.path.join(path_to_source, filename))
         success = True
@@ -29,7 +29,7 @@ class PicturePreparation(object):
 
             if success:
                 resized = cv2.resize(image, (int(256), int(256)))
-                cv2.imwrite("{}/{}/{}.png".format(path_to_destination,filename, index), resized)
+                cv2.imwrite("{}/{}/{}.png".format(path_to_destination, filename, index), resized)
             index += 1
 
         video.release()
@@ -50,34 +50,52 @@ class PicturePreparation(object):
         os.chdir(path_to_training)
         [os.rename(filename, unidecode(filename)) for filename in files_in_training]
         os.chdir("..")
-        os.listdir(path_to_training)
+        # os.listdir(path_to_training)
 
-        function_input = [(path_to_training,'training_frames', filename) for filename in files_in_training if not 
-                            os.path.exists('{}/{}'.format('training_frames',filename))]
+        function_input = [(path_to_training, 'training_frames', filename) for filename in files_in_training if not
+                          os.path.exists('{}/{}'.format('training_frames', filename))]
 
         with Pool(processes=self.workers) as pool:
             pool.starmap_async(PicturePreparation.prepare_images, function_input)
             pool.close()
             pool.join()
-
 
         files_in_testing = os.listdir(path_to_testing)
 
         os.chdir(path_to_testing)
         [os.rename(filename, unidecode(filename)) for filename in files_in_testing]
         os.chdir("..")
-        os.listdir(path_to_testing)
+        # os.listdir(path_to_testing)
 
-        function_input = [(path_to_testing,'testing_frames', filename) for filename in files_in_testing if not 
-                            os.path.exists('{}/{}'.format('testing_frames',filename))]
+        function_input = [(path_to_testing, 'testing_frames', filename) for filename in files_in_testing if not
+                          os.path.exists('{}/{}'.format('testing_frames', filename))]
 
         with Pool(processes=self.workers) as pool:
             pool.starmap_async(PicturePreparation.prepare_images, function_input)
             pool.close()
             pool.join()
 
+    @staticmethod
+    def bw_images_from_folder():
+
+        movies = [x for x in os.listdir('frames_from_movies') if os.path.isdir(os.path.join('frames_from_movies', x))]
+
+        if not os.path.isdir('bw_frames_from_movies'):
+            os.mkdir('bw_frames_from_movies')
+
+        for movie in movies:
+            if not os.path.isdir(os.path.join('bw_frames_from_movies', movie)):
+                os.mkdir(os.path.join('bw_frames_from_movies', movie))
+
+            movie_folder_content = [x for x in os.listdir(os.path.join('frames_from_movies', movie)) if x.endswith('.png')]
+
+            for image in movie_folder_content:
+                bw_image = cv2.imread(os.path.join('frames_from_movies', movie, image), 0)
+                cv2.imwrite(os.path.join(os.path.join('bw_frames_from_movies', movie, image)), bw_image)
+
 
 if __name__ == "__main__":
     pp = PicturePreparation(workers=8)
-    pp.process_all_movies('filmy','filmy2')
-    
+    # pp.process_all_movies('filmy', 'filmy2')
+
+    pp.bw_images_from_folder()
