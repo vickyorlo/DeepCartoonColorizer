@@ -96,6 +96,6 @@ class PicturePreparation(object):
 
 if __name__ == "__main__":
     pp = PicturePreparation(workers=8)
-    # pp.process_all_movies('filmy', 'filmy2')
+    pp.process_all_movies('filmy', 'bw_movies')
 
-    pp.bw_images_from_folder()
+    #pp.bw_images_from_folder()

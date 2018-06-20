@@ -20,7 +20,7 @@ class PictureColorization(object):
             if not os.path.isdir(os.path.join(results_folder, foldername)):
                 os.mkdir(os.path.join(results_folder, foldername))
             
-            for filename in [filename for filename in os.listdir(os.path.join(self.directory, foldername)) if filename.endswith(".png")]:
+            for filename in tqdm([filename for filename in os.listdir(os.path.join(self.directory, foldername)) if filename.endswith(".png")]):
                 color_me = img_to_array(load_img(f"{self.directory}/{foldername}/{filename}"))
                 color_me = rgb2lab((1.0 / 255) * color_me)[:, :, 0] / 512
                 color_me = color_me.reshape(color_me.shape +(1,))
