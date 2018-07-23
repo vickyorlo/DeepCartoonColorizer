@@ -8,6 +8,22 @@ from color_directory import PictureColorization
 from training_preparation import extract_frame_set, extract_testing_frames
 
 
+def generate_all_frames(input_movies_folder):
+    if os.path.exists('training_frames'):
+        rmtree('training_frames')
+
+    PicturePreparation().process_all_movies(input_movies_folder)
+
+
+def extract_sets(stride):
+    if not os.path.isdir('training_frames'):
+        print('First generate training frames with -i option.')
+        return
+
+    extract_frame_set('training_frames', 'training_set', stride=stride)
+    extract_testing_frames('training_frames', 'training_set', 'testing_set')
+
+
 def main():
     parser = argparse.ArgumentParser(description='parser')
     parser.add_argument('-i', help='folder with movie to teach on')
@@ -15,6 +31,7 @@ def main():
     parser.add_argument('-m', help='the model file')
     parser.add_argument('-c', help='color only', action='store_true')
     parser.add_argument('-t', help='train model', action='store_true')
+    parser.add_argument('-a', help='all automatic mode', action='store_true')
     parser.add_argument('-et', help='extract training set', action='store_true')
     parser.add_argument('-e', type=int, help='amount of epochs', default=1000)
     parser.add_argument('-b', type=int, help='batch_size', default=5)
@@ -29,22 +46,23 @@ def main():
     stride = args.s
     extract_training_frames = args.et
 
+    if args.a:
+        generate_all_frames(input_movies_folder)
+        extract_sets(stride)
+        nn = NeuralNetwork('training_set', epochs, batch_size)
+        nn.run()
+        colorizer = PictureColorization(nn.model, color_movies)
+        colorizer.save()
+        return
+
     # to generate all possible frames
     if args.i:
-        if os.path.exists('training_frames'):
-            rmtree('training_frames')
-
-        PicturePreparation().process_all_movies(input_movies_folder)
+        generate_all_frames(input_movies_folder)
         return
 
     # to extract training set
     if extract_training_frames:
-        if not os.path.isdir('training_frames'):
-            print('First generate training frames with -i option.')
-            return
-
-        extract_frame_set('training_frames', 'training_set', stride=stride)
-        extract_testing_frames('training_frames', 'training_set', 'testing_set')
+        extract_sets(stride)
         return
 
     # train model
