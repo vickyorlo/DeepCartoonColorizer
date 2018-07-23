@@ -108,7 +108,6 @@ class NeuralNetwork(object):
             y_batch = lab_batch[:, :, :, 1:] / 512
             yield (x_batch, y_batch)
 
-
     def train(self):
         # tensorboard --logdir=path/to/log-directory
         opt = Adamax(lr=0.001)

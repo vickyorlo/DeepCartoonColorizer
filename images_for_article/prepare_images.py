@@ -4,7 +4,7 @@ import numpy as np
 
 
 def process_image(images):
-    resulting_image = np.empty(shape=(0, 256*3, 3))
+    resulting_image = np.empty(shape=(0, 256*2, 3))
     for index, img in enumerate(images):
         image = cv2.imread(img)
 
@@ -12,17 +12,19 @@ def process_image(images):
         gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
         gray_3d = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
 
-        row = np.concatenate((gray_3d, original, colored), axis=1)
+        row = np.concatenate((original, colored), axis=1)
 
         resulting_image = np.append(resulting_image, row, axis=0)
 
-    return resulting_image
+    img = np.hstack((resulting_image[:1536], resulting_image[1536:]))
+
+    return img
 
 
 if __name__ == '__main__':
 
     try:
-        os.chdir(os.path.join(os.getcwd(), 'image', 'seen'))
+        os.chdir(os.path.join(os.getcwd(), 'image', 'unseen'))
         os.remove("result.png")
     except FileNotFoundError:
         pass
@@ -30,5 +32,9 @@ if __name__ == '__main__':
     images = [x for x in os.listdir(os.path.join(os.getcwd())) if x.endswith('png')]
     images = sorted(images, key=lambda x: int(x.split('.')[0]))
 
-    img = process_image(images)
-    cv2.imwrite("result.png", img)
+    # print(images)
+
+    l = ['2626.png', '2982.png', '3615.png', '3223.png', '4151.png', '8505.png', '5380.png', '6322.png', '7250.png', '7621.png', '8706.png', '9775.png']
+
+    img = process_image(l)
+    cv2.imwrite("result1.png", img)
