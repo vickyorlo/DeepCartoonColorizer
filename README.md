@@ -59,6 +59,7 @@ By default it is 50 (around 2 seconds as in publication).
 
 Running one of this commands will result in creation of two folders. One called 'training_set' and second 'testing_set'.
 
+The split will use images only from 'training_frames' folder.
 ### Model training ###
 
 To train the model the training_set folder is needed with the training images inside.
@@ -107,7 +108,7 @@ python main.py -a -i <folder_name_with_movies>
 Also -e and -b arguments can be specified. Without them the code will run as presented in publication.
 
 ## How to make side by side movie
-To prepare side-by-side movie first we have to make a folder in merge_images directory with a name of a movie. Inside this folder two folders are required. First called 'bw' and second called 'colored'. In the first one place black and white images and colored in the second one. Please remember that images must be names as a integer number representing the frame number (based on this these two images will be merged). Valid file names is for example '0.png' or '1223.png'.
+To prepare side-by-side movie first we have to make a folder in merge_images directory with a name of a movie. Inside this folder two folders are required. First called 'bw' and second called 'colored'. In the first one place black and white images and colored in the second one. Please remember that images must be names as an integers representing the frame number (based on this, these two images will be merged). Valid file names is for example '0.png' or '1223.png'.
 
 The merged_images directory should look like this:
 ```
@@ -126,11 +127,11 @@ python merge_images.py
 Running this command in every movie folder will place an extra folder called 'merged_<name_of_a_movie>' in which there will be side-by-side consecutive frames.
 
 ## How to make a movie from images
-In order to make a movie from images you have to fun the following command
+In order to make a movie from images you have to run the following command
 ```
 python movie_preparation.py <path_to_folder>
 ```
-Running this command can take longer amount of time for a large set of images (1000 images takes around 5 seconds 16GB RAM i7-4700k).
+Running this command will take greater amount of time for a large set of images (1000 images take around 5 seconds 16GB RAM i7-4700k).
 
 
 ## Authors
