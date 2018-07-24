@@ -1,6 +1,7 @@
 import cv2
 import os
 import numpy as np
+from tqdm import tqdm
 
 
 BF_FOLDER_NAME = 'bw'
@@ -8,7 +9,7 @@ COLORED_FOLDER_NAME = 'colored'
 
 
 def get_movies(directory):
-    return [x for x in os.listdir(directory) if os.path.isdir(x)]
+    return [x for x in os.listdir(directory) if os.path.isdir(x) and not x.startswith("__")]
 
 
 def build_path_to_images(movie_directory, type):
@@ -45,9 +46,10 @@ def run(directory):
 
         if not os.path.isdir(save_folder_path):
             os.mkdir(save_folder_path)
+        else:
+            continue
 
-        for index, paths in enumerate(paths):
-            print(index)
+        for index, paths in tqdm(enumerate(paths)):
             bw_img = cv2.imread(paths[0])
             col_img = cv2.imread(paths[1])
 
