@@ -210,11 +210,13 @@ result*
 
 # Models
 *.h5
+!/trained_models/
 
 # logs
 logs
 
 test_result
 merge_images
+images_for_article
 
 # End of https://www.gitignore.io/api/python,windows,pycharm,jupyternotebook
