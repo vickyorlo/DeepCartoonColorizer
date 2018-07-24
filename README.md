@@ -75,8 +75,9 @@ Example command:
 ```
 python main.py -t -e 10 -b 3
 ```
-
 Successful run of this command will produce you the model file `model_1e_pic_m.h5` and logs file `events.out.tfevents.1532362895` placed in `/logs` directory.
+
+In the folder called 'trained_models' there is a trained model that was used in publication. The model is called `model_1000e_pic_m.h5`
 ### Color directory having pre-trained model
 
 To color images having trained model the following command is needed:

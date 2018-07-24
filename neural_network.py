@@ -29,6 +29,8 @@ class NeuralNetwork(object):
     def neural_network_structure():
         network_input = Input(shape=(256, 256, 1,))
 
+        print(network_input.shape)
+
         #encoder
 
         network = Conv2D(16, (3, 3), activation='relu', padding='same')(network_input)
@@ -63,7 +65,6 @@ class NeuralNetwork(object):
         network = Conv2D(256, (3, 3), activation='relu', padding='same')(network)
         network = UpSampling2D((2, 2))(network)
         network = BatchNormalization()(network)
-        
 
         network = Conv2D(128, (3, 3), activation='relu', padding='same')(network)
         network = Conv2D(128, (3, 3), activation='tanh', padding='same')(network)
