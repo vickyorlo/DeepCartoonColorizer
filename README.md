@@ -81,6 +81,13 @@ The command will take every movie folder from 'testing_set' and color it using m
 
 There is also option to specify your own testing folder with -o option. Please remember that the directory you provide need to have an extra folder inside with images you want to color in it.
 
+### Run all stages ###
+There is also possibility to run all of the previous stages using one command:
+```
+python main.py -a -i <folder_name_with_movies>
+```
+Also -e and -b arguments can be specified. Without them the code will run as presented in publication.
+
 ## How to make side by side movie
 To prepare side-by-side movie first we have to make a folder in merge_images directory with a name of a movie. Inside this folder two folders are required. First called 'bw' and second called 'colored'. In the first one place black and white images and colored in the second one. Please remember that images must be names as a integer number representing the frame number (based on this these two images will be merged). Valid file names is for example '0.png' or '1223.png'.
 
@@ -111,7 +118,7 @@ Running this command can take longer amount of time for a large set of images (1
 ## Authors
 
 * **Mariusz Chybicki** - [mariusz.chybicki@gmail.com](mariusz.chybicki@gmail.com)
-* **Wiktor Kozakiewicz**
+* **Wiktor Kozakiewicz** - [vickyorlo@gmail.com](vickyorlo@gmail.com)
 * **Dawid Sielski** - [dawid.sielski@outlook.com](dawid.sielski@outlook.com)
 * **Michał Basiuras**
 * **Anna Fabijańska** - [anna.fabijanska@p.lodz.pl](anna.fabijanska@p.lodz.pl)
