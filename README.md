@@ -79,7 +79,19 @@ python main.py -c -m <model_file>
 ```
 The command will take every movie folder from 'testing_set' and color it using model provided.
 
-There is also option to specify your own testing folder with -o option. Please remember that the directory you provide need to have an extra folder inside with images you want to color in it.
+There is also option to specify your own testing folder with -o option. 
+```
+python main.py -c -m <model_file> -o <folder_name>
+```
+**Please remember that the directory you provide need to have an extra folder inside with images you want to color in it for example:**
+```
+└───your_folder
+    ├───movie1
+    │       example_name.png
+    │
+    └───movie2
+            example_name.png
+```
 
 ### Run all stages ###
 There is also possibility to run all of the previous stages using one command:
