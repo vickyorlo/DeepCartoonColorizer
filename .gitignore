@@ -196,7 +196,9 @@ $RECYCLE.BIN/
 
 # Pictures
 frames_from_movies
-test
+training_set
+testing_set
+RESULTS
 result*
 *.mp4
 *.avi
@@ -208,10 +210,13 @@ result*
 
 # Models
 *.h5
+!/trained_models/
 
 # logs
 logs
 
 test_result
+merge_images
+images_for_article
 
 # End of https://www.gitignore.io/api/python,windows,pycharm,jupyternotebook

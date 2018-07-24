@@ -1,5 +1,8 @@
 import os
 import cv2
+import sys
+
+from tqdm import tqdm
 
 
 class MoviePreparation:
@@ -13,7 +16,7 @@ class MoviePreparation:
         """
         images = []
         n_images = len([image for image in os.listdir(self.directory) if image.endswith('.png')])
-        for image_number in range(n_images):
+        for image_number in tqdm(range(n_images)):
             image = "{}.png".format(image_number)
             images.append(cv2.imread(os.path.join(self.directory, image)))
 
@@ -29,6 +32,23 @@ class MoviePreparation:
 
         movie = cv2.VideoWriter(name, cv2.VideoWriter_fourcc(*'DIVX'), framerate, (width, height))
 
-        for image in images:
+        for image in tqdm(images):
             movie.write(image)
         movie.release()
+
+
+if __name__ == "__main__":
+
+    try:
+        if sys.argv[1]:
+            mp = MoviePreparation(sys.argv[1])
+            mp.save_movie()
+    except IndexError:
+        MOVIES_TO_BE_MERGED = 'merge_images'
+        print(f"Coloring all cartoons in {MOVIES_TO_BE_MERGED} folder.")
+
+        movies = [x for x in os.listdir(MOVIES_TO_BE_MERGED) if not x.startswith('__') and not x.endswith('.py')]
+
+        for movie in tqdm(movies):
+            mp = MoviePreparation(os.path.join(MOVIES_TO_BE_MERGED, movie, 'merged_{}'.format(movie)))
+            mp.save_movie(name=f'merged_{movie}')
