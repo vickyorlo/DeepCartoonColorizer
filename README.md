@@ -35,6 +35,7 @@ deactivate
 ## Running our code
 Our main file consists of several options.
 
+### Creating frames from movies
 The command below will take folder with movies specified by <movies_folder_name> and prepare a folder called 'training_frames' in which there will be folder named after every cartoon with consecutive frames inside.
 ```
 python main.py -i <movies_folder_name>
@@ -44,7 +45,9 @@ This will look like this.
 ├───training_frames
 │   └───Teraz Miki! - Cenne zapasy.mp4
 ```
-Once this is done the training and testing set can be extracted using the command below.
+
+### Preparing testing and training set
+Once frames creation is done the training and testing set can be extracted using the command below.
 ```
 python main.py -et
 ```
@@ -52,7 +55,9 @@ You can also set -s (stride) option for example:
 ```
 python main.py -et -s 100 # means that every 100 frame will considered
 ```
-By default it is 50 (around 2 seconds).
+By default it is 50 (around 2 seconds as in publication).
+
+Running one of this commands will result in creation of two folders. One called 'training_set' and second 'testing_set'.
 
 ### Model training ###
 
@@ -77,6 +82,7 @@ To color images having trained model the following command is needed:
 ```
 python main.py -c -m <model_file>
 ```
+
 The command will take every movie folder from 'testing_set' and color it using model provided.
 
 There is also option to specify your own testing folder with -o option. 
