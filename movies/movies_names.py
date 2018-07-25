@@ -1,8 +1,6 @@
 import os
 
-
 movies = os.listdir(os.getcwd())
-
 
 wiki = """1. Miki i foczka (ang. Mickey and the Seal, 1948)
 2. Przestarszone duchy (ang. Lomesome Ghosts, 1937)
@@ -60,14 +58,8 @@ wiki = """1. Miki i foczka (ang. Mickey and the Seal, 1948)
 54. Mecz tenisa (ang. Tennis Racquet, 1949)
 55. Nie ten wymiar (ang. Out of Scale, 1951)""".split('\n')
 
-
-
 for index, movie in enumerate(movies, 1):
-	if movie=='movies_names.py':
-		continue
-	name = (movie.split(' - ')[1].split('.')[0])
-	print(index, name)
-
-
-
-
+    if movie == 'movies_names.py':
+        continue
+    name = (movie.split(' - ')[1].split('.')[0])
+    print(index, name)

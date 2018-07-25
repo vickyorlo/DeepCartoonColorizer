@@ -1,12 +1,10 @@
-from keras.layers import Conv2D, UpSampling2D, Input, Reshape, concatenate, MaxPooling2D, Dropout, BatchNormalization, \
-    GaussianDropout, AlphaDropout
+from keras.layers import Conv2D, UpSampling2D, Input, MaxPooling2D, BatchNormalization
 from keras.models import Model, load_model
-from keras.preprocessing.image import img_to_array, load_img, ImageDataGenerator
+from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adamax
-from skimage.color import rgb2lab, lab2rgb, rgb2gray, gray2rgb
+from skimage.color import rgb2lab
 from math import ceil
 import keras
-import numpy as np
 import os
 
 
@@ -16,7 +14,8 @@ class NeuralNetwork(object):
 
         self.training_set_size = 0
         for direct in [dirname for dirname in os.listdir(self.training_path)]:
-            self.training_set_size += len([filename for filename in os.listdir(self.training_path + "/" + direct) if filename.endswith(".png")])
+            self.training_set_size += len(
+                [filename for filename in os.listdir(self.training_path + "/" + direct) if filename.endswith(".png")])
         self.epochs = epochs
         self.batch_size = batch_size
         self.datagen = ImageDataGenerator(shear_range=0.2, zoom_range=0.2, rotation_range=20, horizontal_flip=True)
@@ -29,7 +28,7 @@ class NeuralNetwork(object):
     def neural_network_structure():
         network_input = Input(shape=(256, 256, 1,))
 
-        #encoder
+        # encoder
 
         network = Conv2D(16, (3, 3), activation='relu', padding='same')(network_input)
         network = Conv2D(16, (3, 3), activation='tanh', padding='same')(network_input)
@@ -56,7 +55,7 @@ class NeuralNetwork(object):
         network = MaxPooling2D((2, 2))(network)
         network = BatchNormalization()(network)
 
-        #decoder
+        # decoder
 
         network = Conv2D(256, (3, 3), activation='relu', padding='same')(network)
         network = Conv2D(256, (3, 3), activation='tanh', padding='same')(network)
@@ -97,7 +96,7 @@ class NeuralNetwork(object):
     @staticmethod
     def load_model_from_file(filename):
         return load_model(filename)
-        
+
     def image_a_b_gen(self):
 
         for batch in self.datagen.flow_from_directory(self.training_path, batch_size=self.batch_size):
@@ -111,7 +110,8 @@ class NeuralNetwork(object):
     def train(self):
         # tensorboard --logdir=path/to/log-directory
         opt = Adamax(lr=0.001)
-        tb_callback = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=self.batch_size, write_graph=True,
+        tb_callback = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=self.batch_size,
+                                                  write_graph=True,
                                                   write_grads=False, write_images=False, embeddings_freq=0,
                                                   embeddings_layer_names=None, embeddings_metadata=None)
         self.model.compile(optimizer=opt, loss='mse', metrics=['mae', 'acc'])

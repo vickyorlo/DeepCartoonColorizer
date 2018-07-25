@@ -1,9 +1,7 @@
 import os
 import cv2
-import random
 
 from multiprocessing import Pool, cpu_count
-from shutil import rmtree
 from unidecode import unidecode
 
 
@@ -35,11 +33,7 @@ class PicturePreparation(object):
 
         video.release()
 
-    def process_all_movies(self, path_to_training, path_to_testing=None):
-        # if os.path.exists('frames_from_movies'):
-        #     rmtree('frames_from_movies')
-        #     rmtree('test')
-
+    def process_all_movies(self, path_to_training):
         if not os.path.exists('training_frames'):
             os.mkdir('training_frames')
 
@@ -53,30 +47,12 @@ class PicturePreparation(object):
         # os.listdir(path_to_training)
 
         function_input = [(path_to_training, 'training_frames', filename) for filename in files_in_training if not
-                          os.path.exists('{}/{}'.format('training_frames', filename))]
+        os.path.exists('{}/{}'.format('training_frames', filename))]
 
         with Pool(processes=self.workers) as pool:
             pool.starmap_async(PicturePreparation.prepare_images, function_input)
             pool.close()
             pool.join()
-
-        # if not os.path.exists('testing_frames'):
-        #     os.mkdir('testing_frames')
-        #
-        # files_in_testing = os.listdir(path_to_testing)
-        #
-        # os.chdir(path_to_testing)
-        # [os.rename(filename, unidecode(filename)) for filename in files_in_testing]
-        # os.chdir("..")
-        # # os.listdir(path_to_testing)
-        #
-        # function_input = [(path_to_testing, 'testing_frames', filename) for filename in files_in_testing if not
-        #                   os.path.exists('{}/{}'.format('testing_frames', filename))]
-        #
-        # with Pool(processes=self.workers) as pool:
-        #     pool.starmap_async(PicturePreparation.prepare_images, function_input)
-        #     pool.close()
-        #     pool.join()
 
     @staticmethod
     def bw_images_from_folder():
@@ -99,4 +75,4 @@ class PicturePreparation(object):
 
 if __name__ == "__main__":
     pp = PicturePreparation(workers=1)
-    pp.process_all_movies('movies2', 'bw_movies')
+    pp.process_all_movies('movies2')

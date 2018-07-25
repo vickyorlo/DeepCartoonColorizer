@@ -1,12 +1,11 @@
-from imagehash import phash
-from scipy.spatial.distance import hamming
-from skimage.measure import compare_ssim as ssim
-from PIL import Image
 import numpy as np
 import cv2
 import os
-import pandas as pd
 import logging
+
+from imagehash import phash
+from skimage.measure import compare_ssim as ssim
+from merge_images.merge_images import zip_images
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -21,8 +20,6 @@ handler.setFormatter(formatter)
 
 # add the handlers to the logger
 logger.addHandler(handler)
-
-from merge_images.merge_images import zip_images
 
 
 def evaluate_colorization(img1, img2):
@@ -45,7 +42,8 @@ def calculate_ssim(img1_path, img2_path):
 
 
 if __name__ == '__main__':
-    cartoons = [x for x in os.listdir('merge_images') if os.path.isdir(os.path.join('merge_images', x)) and not x.startswith('__')]
+    cartoons = [x for x in os.listdir('merge_images') if
+                os.path.isdir(os.path.join('merge_images', x)) and not x.startswith('__')]
 
     for c in cartoons:
         zipped = zip_images(os.path.join('merge_images', c))
@@ -54,7 +52,7 @@ if __name__ == '__main__':
         except Exception as e:
             logger.error(e)
             continue
-        
+
         result = []
         for x, y in (zipped):
 
