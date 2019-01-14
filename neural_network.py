@@ -3,6 +3,7 @@ from keras.layers import Conv2D, UpSampling2D, Input, Reshape, concatenate, MaxP
 from keras.models import Model, load_model
 from keras.preprocessing.image import img_to_array, load_img, ImageDataGenerator
 from keras.optimizers import Adamax
+from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 from skimage.color import rgb2lab, lab2rgb, rgb2gray, gray2rgb
 from math import ceil
 import keras
@@ -32,8 +33,8 @@ class NeuralNetwork(object):
         #encoder
 
         network = Conv2D(16, (3, 3), activation='relu', padding='same')(network_input)
-        network = Conv2D(16, (3, 3), activation='tanh', padding='same')(network_input)
-        network = Conv2D(16, (3, 3), activation='relu', padding='same')(network_input)
+        network = Conv2D(16, (3, 3), activation='tanh', padding='same')(network)
+        network = Conv2D(16, (3, 3), activation='relu', padding='same')(network)
 
         network = MaxPooling2D((2, 2))(network)
         network = BatchNormalization()(network)
@@ -61,8 +62,8 @@ class NeuralNetwork(object):
         network = Conv2D(256, (3, 3), activation='relu', padding='same')(network)
         network = Conv2D(256, (3, 3), activation='tanh', padding='same')(network)
         network = Conv2D(256, (3, 3), activation='relu', padding='same')(network)
-        network = UpSampling2D((2, 2))(network)
         network = BatchNormalization()(network)
+        network = UpSampling2D((2, 2))(network)
 
         network = Conv2D(128, (3, 3), activation='relu', padding='same')(network)
         network = Conv2D(128, (3, 3), activation='tanh', padding='same')(network)
@@ -111,13 +112,18 @@ class NeuralNetwork(object):
     def train(self):
         # tensorboard --logdir=path/to/log-directory
         opt = Adamax(lr=0.001)
+        patience = 50
         tb_callback = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=self.batch_size, write_graph=True,
                                                   write_grads=False, write_images=False, embeddings_freq=0,
                                                   embeddings_layer_names=None, embeddings_metadata=None)
+        model_names = 'model.{epoch:02d}-{loss:.10f}.hdf5'
+        model_checkpoint = ModelCheckpoint(os.path.join('models', model_names), monitor='loss', verbose=1, save_best_only=True)
+        early_stop = EarlyStopping('val_loss', patience=patience)
+        reduce_lr = ReduceLROnPlateau('val_loss', factor=0.1, patience=int(patience / 4), verbose=1)
         self.model.compile(optimizer=opt, loss='mse', metrics=['mae', 'acc'])
         self.model.fit_generator(self.image_a_b_gen(), epochs=self.epochs,
                                  steps_per_epoch=int(ceil(float(self.training_set_size) / self.batch_size)),
-                                 callbacks=[tb_callback])
+                                 callbacks=[tb_callback, early_stop, reduce_lr, model_checkpoint])
 
     def save_model(self):
         self.model.save_weights('weights_{}e_pic.h5'.format(self.epochs))
