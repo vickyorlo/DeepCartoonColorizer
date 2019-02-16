@@ -134,11 +134,28 @@ python movie_preparation.py <path_to_folder>
 ```
 Running this command will take greater amount of time for a large set of images (1000 images take around 5 seconds 16GB RAM i7-4700k).
 
+## Citation
+
+If you use this work in your research pleace cite is using:
+```
+@article{CHYBICKI201937,
+title = "Deep cartoon colorizer: An automatic approach for colorization of vintage cartoons",
+journal = "Engineering Applications of Artificial Intelligence",
+volume = "81",
+pages = "37 - 46",
+year = "2019",
+issn = "0952-1976",
+doi = "https://doi.org/10.1016/j.engappai.2019.02.006",
+url = "http://www.sciencedirect.com/science/article/pii/S0952197619300296",
+author = "Mariusz Chybicki and Wiktor Kozakiewicz and Dawid Sielski and Anna Fabijańska",
+keywords = "Cartoon, Automatic colorization, Deep learning, Convolutional neural network",
+abstract = "Although there exist several approaches to the automatic colorization of the natural scene images and movies the problem of cartoon colorization has barely been considered. Therefore, this paper proposes a fully automatic pipeline to create a plausible colorization of vintage cartoons which is visually appealing to a human observer. Particularly, the Deep Cartoon Colorizer is proposed. The method incorporates an encoder–decoder convolutional neural network which is trained to map colors onto consecutive cartoon frames. The method was trained with 4944 images and tested on 34 vintage Disney cartoons including both the decolorized and the originally monochrome movies. In total 265388 cartoon frames were assessed including 246591 decolorized frames and 18797 originally monochrome ones. The resulting automatic colorizations were evaluated both quantitatively (by means of popular image perceptual quality measures) and qualitatively (by performing a human perception test). The resulting median values of the image quality measures range from 0.66 for Visual Information Fidelity and 0.85 for HaarPSI, through 0.94 for Structural Similarity Index, to 0.97 for Universal Image Quality Index which is a very good result. The subjective scores assigned by the human raters’ on a ten-degree scale are on average equal to 6.11 and 6.63 for decolorized and monochrome frames respectively. This result also confirms that the desired effect of plausible colorization was obtained by the introduced approach."
+}
+```
 
 ## Authors
 
 * **Mariusz Chybicki** - [mariusz.chybicki@gmail.com](mariusz.chybicki@gmail.com)
 * **Wiktor Kozakiewicz** - [vickyorlo@gmail.com](vickyorlo@gmail.com)
 * **Dawid Sielski** - [dawid.sielski@outlook.com](dawid.sielski@outlook.com)
-* **Michał Basiuras**
 * **Anna Fabijańska** - [anna.fabijanska@p.lodz.pl](anna.fabijanska@p.lodz.pl)
