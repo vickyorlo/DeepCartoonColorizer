@@ -34,7 +34,7 @@ def main():
     parser.add_argument('-a', help='all automatic mode', action='store_true')
     parser.add_argument('-et', help='extract training set', action='store_true')
     parser.add_argument('-e', type=int, help='amount of epochs', default=1000)
-    parser.add_argument('-b', type=int, help='batch_size', default=5)
+    parser.add_argument('-b', type=int, help='batch_size', default=20)
     parser.add_argument('-s', type=int, help='how many files to skip when creating training set', default=50)
     args = parser.parse_args()
 
