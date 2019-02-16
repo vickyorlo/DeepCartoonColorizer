@@ -136,7 +136,7 @@ Running this command will take greater amount of time for a large set of images 
 
 ## Citation
 
-If you use this work in your research pleace cite is using:
+If you use this work in your research please cite us using:
 ```
 @article{CHYBICKI201937,
 title = "Deep cartoon colorizer: An automatic approach for colorization of vintage cartoons",
