@@ -137,7 +137,7 @@ Running this command will take greater amount of time for a large set of images 
 ## Citation
 
 The source code of the Deep Cartoon Colorizer may be used for non-commercial research provided you acknowledge the source by citing the following paper:
-* Mariusz Chybicki, Wiktor Kozakiewicz, Dawid Sielski, Anna Fabijańska: Deep cartoon colorizer: An automatic approach for colorization of vintage cartoons, Engineering Applications of Artificial Intelligence, vol. 81, 2019, pp. 37-46, doi: 10.1016/j.engappai.2019.02.006 [BibTEX](https://github.com/vickyorlo/DeepCartoonColorizer/blob/master/DCC.BIB)
+* Mariusz Chybicki, Wiktor Kozakiewicz, Dawid Sielski, Anna Fabijańska: Deep cartoon colorizer: An automatic approach for colorization of vintage cartoons, Engineering Applications of Artificial Intelligence, vol. 81, 2019, pp. 37-46, doi: 10.1016/j.engappai.2019.02.006 [Link](https://doi.org/10.1016/j.engappai.2019.02.006) [BibTEX](https://github.com/vickyorlo/DeepCartoonColorizer/blob/master/DCC.BIB)
 
 ```
 @article{Chybicki2019,
