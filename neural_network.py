@@ -90,7 +90,7 @@ class NeuralNetwork(object):
         network = Conv2D(4, (3, 3), activation='relu', padding='same')(network)
         network = Conv2D(4, (3, 3), activation='tanh', padding='same')(network)
         network = Conv2D(4, (3, 3), activation='relu', padding='same')(network)
-        network_output = Conv2D(2, (3, 3), activation='tanh', padding='same')(network)
+        network_output = Conv2D(3, (3, 3), activation='tanh', padding='same')(network)
 
         return Model(inputs=network_input, outputs=network_output)
 
@@ -101,25 +101,27 @@ class NeuralNetwork(object):
     def image_a_b_gen(self):
 
         for batch in self.datagen.flow_from_directory(self.training_path, batch_size=self.batch_size):
-            _batch = (1.0 / 255) * batch[0]
-            lab_batch = rgb2lab(_batch)
-            x_batch = lab_batch[:, :, :, 0] / 512
+            _batch =  batch[0]
+            #lab_batch = rgb2lab(_batch)
+            #x_batch = lab_batch[:, :, :, 0] / 512
+            x_batch = rgb2gray(_batch)
+            y_batch = _batch
             x_batch = x_batch.reshape(x_batch.shape + (1,))
-            y_batch = lab_batch[:, :, :, 1:] / 512
+            #y_batch = lab_batch[:, :, :, 1:] / 512
             yield (x_batch, y_batch)
 
     def train(self):
         # tensorboard --logdir=path/to/log-directory
         opt = Adamax(lr=0.001)
 
-        patience = 50
+        patience = 25
         tb_callback = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=self.batch_size, write_graph=True,
                                                   write_grads=False, write_images=False, embeddings_freq=0,
                                                   embeddings_layer_names=None, embeddings_metadata=None)
         model_names = 'model.{epoch:02d}-{loss:.10f}.hdf5'
         model_checkpoint = ModelCheckpoint(os.path.join('models', model_names), monitor='loss', verbose=1, save_best_only=True)
-        early_stop = EarlyStopping('val_loss', patience=patience)
-        reduce_lr = ReduceLROnPlateau('val_loss', factor=0.1, patience=int(patience / 4), verbose=1)
+        early_stop = EarlyStopping('loss', patience=patience)
+        reduce_lr = ReduceLROnPlateau('loss', factor=0.1, patience=int(patience / 2), verbose=1)
         self.model.compile(optimizer=opt, loss='mse', metrics=['mae', 'acc'])
         self.model.fit_generator(self.image_a_b_gen(), epochs=self.epochs,
                                  steps_per_epoch=int(ceil(float(self.training_set_size) / self.batch_size)),

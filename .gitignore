@@ -219,5 +219,6 @@ logs
 test_result
 merge_images
 images_for_article
+models/
 
 # End of https://www.gitignore.io/api/python,windows,pycharm,jupyternotebook
