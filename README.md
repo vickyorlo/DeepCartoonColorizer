@@ -156,6 +156,6 @@ The source code of the Deep Cartoon Colorizer may be used for non-commercial res
 ## Authors
 
 * **Mariusz Chybicki** - [mariusz.chybicki@gmail.com](mariusz.chybicki@gmail.com)
-* **Wiktor Kozakiewicz** - [vickyorlo@gmail.com](vickyorlo@gmail.com)
+* **Wiktor Kozakiewicz** - [wikkozakiewicz@gmail.com](wikkozakiewicz@gmail.com)
 * **Dawid Sielski** - [dawid.sielski@outlook.com](dawid.sielski@outlook.com)
 * **Anna Fabijańska** - [anna.fabijanska@p.lodz.pl](anna.fabijanska@p.lodz.pl)
