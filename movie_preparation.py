@@ -25,6 +25,7 @@ class MoviePreparation:
     def save_movie(self, framerate=25, name='movie.avi'):
         """
         This function makes a movie from set of pictures.
+        :param framerate: Framerate of a movie (25 by default).
         :param name: Holds information about the output movie filename ('movie.avi' by default).
         """
         images = self.__prepare_images_for_movie()
