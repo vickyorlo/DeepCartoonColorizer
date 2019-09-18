@@ -2,7 +2,7 @@ import os
 import argparse
 
 from shutil import rmtree
-from picture_preparation import PicturePreparation
+from utilities.picture_preparation import PicturePreparation
 from neural_network import NeuralNetwork
 from color_directory import PictureColorization
 from training_preparation import extract_frame_set, extract_testing_frames
@@ -29,12 +29,15 @@ def main():
     parser.add_argument('-i', help='folder with movie to teach on')
     parser.add_argument('-o', help='folder with movies to color', default='testing_set')
     parser.add_argument('-m', help='the model file')
+    parser.add_argument('-trs', help='folder with the training set', default='training_set')
     parser.add_argument('-c', help='color only', action='store_true')
+    parser.add_argument('--patches', help='color only(32x32 patches)', action='store_true')
     parser.add_argument('-t', help='train model', action='store_true')
     parser.add_argument('-a', help='all automatic mode', action='store_true')
     parser.add_argument('-et', help='extract training set', action='store_true')
     parser.add_argument('-e', type=int, help='amount of epochs', default=1000)
-    parser.add_argument('-b', type=int, help='batch_size', default=20)
+    parser.add_argument('-b', type=int, help='batch_size', default=5)
+    parser.add_argument('--patch-size', type=int, help='size of input images (for patches only) (powers of 2 only)', default=256)
     parser.add_argument('-s', type=int, help='how many files to skip when creating training set', default=50)
     args = parser.parse_args()
 
@@ -45,11 +48,12 @@ def main():
     batch_size = args.b
     stride = args.s
     extract_training_frames = args.et
+    training_folder = args.trs
 
     if args.a:
         generate_all_frames(input_movies_folder)
         extract_sets(stride)
-        nn = NeuralNetwork('training_set', epochs, batch_size)
+        nn = NeuralNetwork(training_folder, epochs, batch_size)
         nn.run()
         colorizer = PictureColorization(nn.model, color_movies)
         colorizer.save()
@@ -65,17 +69,24 @@ def main():
         extract_sets(stride)
         return
 
-    # train model
-    if os.path.isdir('training_set') and args.t:
-        nn = NeuralNetwork('training_set', epochs, batch_size)
+    # train model on given training set
+    if os.path.isdir(training_folder) and args.t:
+        nn = NeuralNetwork(training_folder, epochs, batch_size,args.patch_size)
         nn.run()
         return
 
     # to color directory with a model
     if args.c and args.m:
-        nn = NeuralNetwork('training_set', epochs, batch_size, model)
+        nn = NeuralNetwork(training_folder, epochs, batch_size, model)
         colorizer = PictureColorization(nn.model, color_movies)
         colorizer.save()
+        return
+
+    # to color directory with a model (patches)
+    if args.patches and args.m:
+        nn = NeuralNetwork(training_folder, epochs, batch_size, model,args.patch_size)
+        colorizer = PictureColorization(nn.model, color_movies)
+        colorizer.save(args.patch_size)
         return
 
 
