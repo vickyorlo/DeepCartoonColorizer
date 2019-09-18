@@ -86,7 +86,7 @@ def main():
     if args.patches and args.m:
         nn = NeuralNetwork(training_folder, epochs, batch_size, model,args.patch_size)
         colorizer = PictureColorization(nn.model, color_movies)
-        colorizer.save_patches(args.patch_size)
+        colorizer.save(args.patch_size)
         return
 
 
