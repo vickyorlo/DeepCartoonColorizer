@@ -31,7 +31,7 @@ class PictureColorization(object):
                 cur[:, :, 1:] = output[0][:, :, :]
                 imsave(f"{results_folder}/{foldername}/{filename}", lab2rgb(cur))
 
-    def save_patches(self,results_folder="test_result"):
+    def save_patches(self, patch_size, results_folder="test_result"):
         if not os.path.exists(results_folder):
             os.mkdir(results_folder)
 
@@ -44,13 +44,13 @@ class PictureColorization(object):
                 color_me = rgb2lab((1.0 / 255) * color_me)[:, :, 0] / 512
                 color_me = color_me.reshape(color_me.shape +(1,))
                 result = np.zeros((256,256,3))
-                for y in range(0,256-30,2):
-                    for x in range(0,256-30,2):
-                        patch = color_me[x:x+32,y:y+32]
+                for y in range(0,256,patch_size):
+                    for x in range(0,256,patch_size):
+                        patch = color_me[x:x+patch_size,y:y+patch_size]
                         output = self.model.predict(np.array([patch]))
                         output *= 512
-                        cur = np.zeros((32, 32, 3))
+                        cur = np.zeros((patch_size, patch_size, 3))
                         cur[:, :, 0] = patch[:, :, 0] * 512
                         cur[:, :, 1:] = output[0][:, :, :]
-                        result[x:x+32,y:y+32] = (result[x:x+32,y:y+32] + cur)/2
+                        result[x:x+patch_size,y:y+patch_size] = (result[x:x+patch_size,y:y+patch_size] + cur)/2
                 imsave(f"{results_folder}/{foldername}/{filename}", lab2rgb(result))

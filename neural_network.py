@@ -12,26 +12,23 @@ import os
 
 
 class NeuralNetwork(object):
-    def __init__(self, training_path, epochs=10, batch_size=1, path_to_model=None):
+    def __init__(self, training_path, epochs=10, batch_size=1, path_to_model=None,image_size=256):
         self.training_path = training_path
-
-        print("TRAINING PATH")
-        print(self.training_path)
+        self.image_size = image_size
+        self.epochs = epochs
+        self.batch_size = batch_size
 
         self.training_set_size = 0
         for direct in [dirname for dirname in os.listdir(self.training_path)]:
             self.training_set_size += len([filename for filename in os.listdir(self.training_path + "/" + direct) if filename.endswith(".png")])
-        self.epochs = epochs
-        self.batch_size = batch_size
         self.datagen = ImageDataGenerator(shear_range=0.2, zoom_range=0.2, rotation_range=20, horizontal_flip=True)
         if path_to_model is None:
-            self.model = NeuralNetwork.neural_network_structure()
+            self.model = self.neural_network_structure()
         else:
             self.model = NeuralNetwork.load_model_from_file(path_to_model)
 
-    @staticmethod
-    def neural_network_structure():
-        network_input = Input(shape=(32, 32, 1,))
+    def neural_network_structure(self):
+        network_input = Input(shape=(self.image_size, self.image_size, 1,))
 
         #encoder
 
@@ -106,7 +103,7 @@ class NeuralNetwork(object):
         
     def image_a_b_gen(self):
 
-        for batch in self.datagen.flow_from_directory(self.training_path, target_size=(32,32), batch_size=self.batch_size):
+        for batch in self.datagen.flow_from_directory(self.training_path, target_size=(self.image_size,self.image_size), batch_size=self.batch_size):
             _batch = (1.0 / 255) * batch[0]
             lab_batch = rgb2lab(_batch)
             x_batch = lab_batch[:, :, :, 0] / 512
